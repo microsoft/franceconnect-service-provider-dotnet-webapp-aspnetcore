@@ -1,5 +1,4 @@
-# franceconnect-service-provider-dotnet-webapp-aspnetcore
-## Kit de démarrage fournisseur de service FranceConnect
+# Kit de démarrage - Fournisseur de service FranceConnect
 
 Bientôt disponible.
 
