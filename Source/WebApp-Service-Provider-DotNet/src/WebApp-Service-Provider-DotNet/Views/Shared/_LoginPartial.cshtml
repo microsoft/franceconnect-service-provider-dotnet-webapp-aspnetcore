@@ -1,0 +1,35 @@
+﻿@using System.Security.Claims
+
+@if (User.IsSignedIn())
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a asp-controller="Data" asp-action="Index">Données</a>
+        </li>
+        @if (User.HasClaim(claim => claim.Type == ClaimTypes.AuthenticationMethod && claim.Value == Scheme.FranceConnect))
+        {
+            <li>
+                <a asp-controller="Manage" asp-action="Index">Mon compte</a>
+            </li>
+            <li id="fconnect-profile" data-fc-logout-url="@Url.Action("LogOff", "Account")">
+                <a href="#">@User.GetUserName()</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a asp-controller="Manage" asp-action="Index" title="Mon compte">Bonjour @User.GetUserName() !</a>
+            </li>
+            <li>
+                <a asp-controller="Account" asp-action="LogOff">Se déconnecter</a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li><a asp-controller="Account" asp-action="Register">Créer un compte</a></li>
+        <li><a asp-controller="Account" asp-action="Login">Se connecter</a></li>
+    </ul>
+}
