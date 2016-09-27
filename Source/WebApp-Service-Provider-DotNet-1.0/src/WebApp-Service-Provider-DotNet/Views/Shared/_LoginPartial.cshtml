@@ -6,6 +6,9 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a asp-controller="Data" asp-action="Index">Données</a>
+        </li>
         @if (await SignInManager.GetExternalLoginInfoAsync() != null)
         {
             <li>

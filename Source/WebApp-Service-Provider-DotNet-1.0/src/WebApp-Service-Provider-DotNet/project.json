@@ -1,6 +1,6 @@
 {
   "userSecretsId": "aspnet5-WebApp_Service_Provider_DotNet-83512670-8c0d-4168-be43-1cf3f98de941",
-  
+
   "dependencies": {
     "Microsoft.NETCore.App": {
       "version": "1.0.0",
@@ -46,9 +46,11 @@
     "Microsoft.Extensions.Caching.Abstractions": "1.0.0",
     "Microsoft.AspNetCore.Http.Extensions": "1.0.0",
     "Microsoft.EntityFrameworkCore": "1.0.0",
-    "BundlerMinifier.Core": "2.1.258",
+    "BundlerMinifier.Core": "2.2.281",
     "Microsoft.AspNetCore.Authentication.OpenIdConnect": "1.0.0",
-    "Microsoft.AspNetCore.Authentication.OAuth": "1.0.0"  },
+    "Microsoft.AspNetCore.Authentication.OAuth": "1.0.0",
+    "IdentityModel": "2.0.0-rc3"
+  },
 
   "tools": {
     "BundlerMinifier.Core": "2.0.238",
@@ -95,7 +97,7 @@
   },
 
   "scripts": {
-    "prepublish": [ "bower install", "dotnet bundle" ],
+    "prepublish": [ "npm install", "bower install", "dotnet bundle", "gulp clean", "gulp min" ],
     "postpublish": [ "dotnet publish-iis --publish-folder %publish:OutputPath% --framework %publish:FullTargetFramework%" ]
   }
 }

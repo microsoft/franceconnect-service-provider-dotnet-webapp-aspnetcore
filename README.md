@@ -12,5 +12,3 @@ Utilisateur :
 - Fournisseur d'identité : DGFIP
 - Numéro fiscal : 248163264128
 - Mot de passe : 123
-
-> La version 1.0 ne prend pas en charge l'appel aux fournisseurs de données, à la différence de la version 1.0-RC1.

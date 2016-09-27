@@ -128,7 +128,7 @@ namespace WebApp_Service_Provider_DotNet
             franceConnectOptions.Configuration = new OpenIdConnectConfiguration
             {
                 Issuer = opts.Value.Issuer,
-                AuthorizationEndpoint = string.Format(opts.Value.AuthorizationEndpoint, opts.Value.EIdas),
+                AuthorizationEndpoint = opts.Value.AuthorizationEndpoint + "?acr_values=" + opts.Value.EIdas,
                 TokenEndpoint = opts.Value.TokenEndpoint,
                 UserInfoEndpoint = opts.Value.UserInfoEndpoint,
                 EndSessionEndpoint = opts.Value.EndSessionEndpoint
