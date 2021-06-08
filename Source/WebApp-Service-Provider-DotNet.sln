@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26114.2
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{18FEF71F-7BA0-4281-AC57-C708DA4B768E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp-Service-Provider-DotNet", "src\WebApp-Service-Provider-DotNet\WebApp-Service-Provider-DotNet.csproj", "{4A8254FB-09CB-4CBF-9418-F7E6A95504CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp-Service-Provider-DotNet", "WebApp-Service-Provider-DotNet\WebApp-Service-Provider-DotNet.csproj", "{4A8254FB-09CB-4CBF-9418-F7E6A95504CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,7 +19,7 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{4A8254FB-09CB-4CBF-9418-F7E6A95504CF} = {18FEF71F-7BA0-4281-AC57-C708DA4B768E}
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8D4C59EC-6F2E-4277-AAE6-D8D71E851A17}
 	EndGlobalSection
 EndGlobal
