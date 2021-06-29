@@ -1,4 +1,4 @@
-﻿//
+//
 // The MIT License (MIT)
 // Copyright (c) 2016 Microsoft France
 //
@@ -29,6 +29,7 @@ namespace WebApp_Service_Provider_DotNet
 {
     public class Scheme
     {
+        public const string FranceConnectDisplayName = "FranceConnect";
         public const string FranceConnect = "oidc_FranceConnect";
     }
 
