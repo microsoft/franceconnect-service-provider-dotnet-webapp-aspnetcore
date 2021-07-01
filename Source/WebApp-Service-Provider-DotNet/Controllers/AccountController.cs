@@ -1,4 +1,4 @@
-﻿//
+//
 // The MIT License (MIT)
 // Copyright (c) 2016 Microsoft France
 //
@@ -24,7 +24,6 @@
 //
 
 using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +33,7 @@ using Microsoft.Extensions.Logging;
 using WebApp_Service_Provider_DotNet.Models;
 using WebApp_Service_Provider_DotNet.Services;
 using WebApp_Service_Provider_DotNet.ViewModels.Account;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace WebApp_Service_Provider_DotNet.Controllers
 {
@@ -150,7 +149,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             _logger.LogInformation(4, "User logged out.");
             if (await _signInManager.GetExternalLoginInfoAsync() != null)
             {
-                await HttpContext.Authentication.SignOutAsync(Scheme.FranceConnect);
+                await HttpContext.SignOutAsync(Scheme.FranceConnect);
             }
             else
             {

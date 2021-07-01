@@ -1,6 +1,5 @@
 ﻿@using System.Collections.Generic
-@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http.Authentication
+@using Microsoft.AspNetCore.Authentication
 @model LoginViewModel
 @inject SignInManager<ApplicationUser> SignInManager
 
@@ -57,9 +56,9 @@
             <h4>S'authentifier avec FranceConnect.</h4>
             <hr />
             @{
-                var franceConnectProvider = SignInManager.GetExternalAuthenticationSchemes().FirstOrDefault(auth => auth.AuthenticationScheme == Scheme.FranceConnect);
+                var franceConnectProvider = (await SignInManager.GetExternalAuthenticationSchemesAsync()).FirstOrDefault(auth => auth.Name == Scheme.FranceConnect);
                 <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-                    <button type="submit" class="btn-fc" name="provider" value="@franceConnectProvider.AuthenticationScheme" title="Connectez vous avec votre compte @franceConnectProvider.DisplayName"></button>
+                    <button type="submit" class="btn-fc" name="provider" value="@franceConnectProvider.Name" title="Connectez vous avec votre compte @franceConnectProvider.DisplayName"></button>
                 </form>
             }
         </section>
