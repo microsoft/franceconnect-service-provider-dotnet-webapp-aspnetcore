@@ -1,4 +1,4 @@
-﻿//
+//
 // The MIT License (MIT)
 // Copyright (c) 2016 Microsoft France
 //
@@ -24,7 +24,7 @@
 //
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -98,7 +98,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                     if (useExternalLogin)
                     {
                         string postLogoutRedirectUri = CreateUri(nameof(ManageLogins));
-                        await HttpContext.Authentication.SignOutAsync(Scheme.FranceConnect, new AuthenticationProperties { RedirectUri = postLogoutRedirectUri });
+                        await HttpContext.SignOutAsync(Scheme.FranceConnect, new AuthenticationProperties { RedirectUri = postLogoutRedirectUri });
                     }
                     else
                     {
@@ -191,13 +191,14 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 return View("Error");
             }
             var userLogins = await _userManager.GetLoginsAsync(user);
-            var availableProviders = _signInManager.GetExternalAuthenticationSchemes().Where(auth => userLogins.All(ul => auth.AuthenticationScheme != ul.LoginProvider)).ToList();
+            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
+            var availableProviders = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
             return View(new ManageLoginsViewModel
             {
                 IsLinkedToFranceConnect = userLogins.Any(auth => auth.LoginProvider == Scheme.FranceConnect),
                 CanRemoveExternalLogin = user.PasswordHash != null || userLogins.Count > 1,
                 FranceConnectUserAccount = userLogins.FirstOrDefault(auth => auth.LoginProvider == Scheme.FranceConnect),
-                FranceConnectProvider = availableProviders.FirstOrDefault(auth => auth.AuthenticationScheme == Scheme.FranceConnect)
+                FranceConnectProvider = availableProviders.FirstOrDefault(auth => auth.Name == Scheme.FranceConnect)
             });
         }
 
