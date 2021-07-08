@@ -1,4 +1,4 @@
-﻿//
+//
 // The MIT License (MIT)
 // Copyright (c) 2016 Microsoft France
 //
@@ -23,20 +23,20 @@
 // You may obtain a copy of the License at https://opensource.org/licenses/MIT
 //
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Text;
 using WebApp_Service_Provider_DotNet.Models;
 using WebApp_Service_Provider_DotNet.Services;
@@ -45,26 +45,13 @@ namespace WebApp_Service_Provider_DotNet
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            // Set up configuration sources.
-
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
-            }
-
-            builder.AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
+            // Configuration loads behind the scenes since 2.0, with sources defined in program.cs https://docs.microsoft.com/en-us/aspnet/core/migration/1x-to-2x/?view=aspnetcore-3.1#add-configuration-providers
         }
 
-        public IConfigurationRoot Configuration { get; set; }
+        public IConfiguration Configuration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -80,15 +67,25 @@ namespace WebApp_Service_Provider_DotNet
             // Add configuration
             services.AddOptions();
             services.Configure<FranceConnectConfiguration>(Configuration.GetSection("FranceConnect"));
+            var franceConnectConfig = Configuration.GetSection("FranceConnect").Get<FranceConnectConfiguration>();
 
-            services.AddMvc();
+            services.AddAuthentication(
+                options =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = Scheme.FranceConnect;
+                })
+                .AddCookie()
+                .AddOpenIdConnect(Scheme.FranceConnect, Scheme.FranceConnectDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig));
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IOptions<FranceConnectConfiguration> opts)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -108,32 +105,9 @@ namespace WebApp_Service_Provider_DotNet
 
             app.UseStaticFiles();
 
-            app.UseIdentity();
+            app.UseAuthentication();
 
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
-            var franceConnectOptions = new OpenIdConnectOptions();
-            franceConnectOptions.AuthenticationScheme = Scheme.FranceConnect;
-            franceConnectOptions.DisplayName = "FranceConnect";
-            franceConnectOptions.ClientId = opts.Value.ClientId;
-            franceConnectOptions.ClientSecret = opts.Value.ClientSecret;
-            franceConnectOptions.Authority = opts.Value.Issuer;
-            franceConnectOptions.ResponseType = OpenIdConnectResponseType.Code;
-            franceConnectOptions.Scope.Clear();
-            franceConnectOptions.Scope.Add("openid");
-            franceConnectOptions.Scope.Add("profile");
-            franceConnectOptions.Scope.Add("birth");
-            franceConnectOptions.Scope.Add("email");
-            franceConnectOptions.GetClaimsFromUserInfoEndpoint = true;
-            franceConnectOptions.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(opts.Value.ClientSecret));
-            franceConnectOptions.Configuration = new OpenIdConnectConfiguration
-            {
-                Issuer = opts.Value.Issuer,
-                AuthorizationEndpoint = opts.Value.AuthorizationEndpoint + "?acr_values=" + opts.Value.EIdas,
-                TokenEndpoint = opts.Value.TokenEndpoint,
-                UserInfoEndpoint = opts.Value.UserInfoEndpoint,
-                EndSessionEndpoint = opts.Value.EndSessionEndpoint
-            };
-            app.UseOpenIdConnectAuthentication(franceConnectOptions);
 
             app.UseMvc(routes =>
             {
@@ -141,6 +115,31 @@ namespace WebApp_Service_Provider_DotNet
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+        private void ConfigureFranceConnect(OpenIdConnectOptions oidc_options, FranceConnectConfiguration fcConfig)
+        {
+
+            oidc_options.ClientId = fcConfig.ClientId;
+            oidc_options.ClientSecret = fcConfig.ClientSecret;
+
+            oidc_options.Authority = fcConfig.Issuer;
+            oidc_options.ResponseType = OpenIdConnectResponseType.Code;
+            oidc_options.Scope.Clear();
+            oidc_options.Scope.Add("openid");
+            oidc_options.Scope.Add("profile");
+            oidc_options.Scope.Add("birth");
+            oidc_options.Scope.Add("email");
+            oidc_options.GetClaimsFromUserInfoEndpoint = true;
+            oidc_options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(fcConfig.ClientSecret));
+            oidc_options.Configuration = new OpenIdConnectConfiguration
+            {
+                Issuer = fcConfig.Issuer,
+                AuthorizationEndpoint = fcConfig.AuthorizationEndpoint + "?acr_values=" + fcConfig.EIdas,
+                TokenEndpoint = fcConfig.TokenEndpoint,
+                UserInfoEndpoint = fcConfig.UserInfoEndpoint,
+                EndSessionEndpoint = fcConfig.EndSessionEndpoint,
+            };
+
         }
     }
 }

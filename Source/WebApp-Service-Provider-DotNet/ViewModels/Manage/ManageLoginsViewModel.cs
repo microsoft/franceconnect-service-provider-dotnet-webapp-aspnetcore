@@ -23,11 +23,7 @@
 // You may obtain a copy of the License at https://opensource.org/licenses/MIT
 //
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
 namespace WebApp_Service_Provider_DotNet.ViewModels.Manage
@@ -40,6 +36,6 @@ namespace WebApp_Service_Provider_DotNet.ViewModels.Manage
 
         public UserLoginInfo FranceConnectUserAccount { get; set; }
 
-        public AuthenticationDescription FranceConnectProvider { get; set; }
+        public AuthenticationScheme FranceConnectProvider { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http.Authentication
+﻿@using Microsoft.AspNetCore.Authentication
 @model ManageLoginsViewModel
 @{
     ViewData["Title"] = "Gérez vos authentifications externes";
@@ -33,7 +33,7 @@ else
     <hr />
     <form asp-controller="Manage" asp-action="LinkLogin" method="post" class="form-horizontal" role="form">
         <div>
-            <button type="submit" class="btn-fc" name="provider" value="@Model.FranceConnectProvider.AuthenticationScheme" title="Connectez vous avec votre compte @Model.FranceConnectProvider.DisplayName"></button>
+            <button type="submit" class="btn-fc" name="provider" value="@Model.FranceConnectProvider.Name" title="Connectez vous avec votre compte @Model.FranceConnectProvider.DisplayName"></button>
         </div>
     </form>
 }
