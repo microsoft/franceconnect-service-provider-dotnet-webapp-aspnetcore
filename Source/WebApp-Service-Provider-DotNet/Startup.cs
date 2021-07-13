@@ -57,6 +57,13 @@ namespace WebApp_Service_Provider_DotNet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            if (string.IsNullOrEmpty(Configuration["FranceConnect:ClientSecret"]))
+            {
+                throw new InvalidOperationException("FC Client Secret not found. It must be added to the configuration, through User Secrets for example.");
+                // User-Secrets documentation : https://docs.asp.net/en/latest/security/app-secrets.html
+            }
+
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -67,6 +74,12 @@ namespace WebApp_Service_Provider_DotNet
 
             // Add configuration
             services.AddOptions();
+
+            //Since chromium updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+            });
             services.Configure<FranceConnectConfiguration>(Configuration.GetSection("FranceConnect"));
             var franceConnectConfig = Configuration.GetSection("FranceConnect").Get<FranceConnectConfiguration>();
 
@@ -76,7 +89,6 @@ namespace WebApp_Service_Provider_DotNet
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = Scheme.FranceConnect;
                 })
-                .AddCookie()
                 .AddOpenIdConnect(Scheme.FranceConnect, Scheme.FranceConnectDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig));
 
             services.AddControllersWithViews();
@@ -97,9 +109,13 @@ namespace WebApp_Service_Provider_DotNet
             else
             {
                 app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+                app.UseHttpsRedirection();
             }
 
             app.UseRequestLocalization(new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("fr-FR") });
+
+            app.UseCookiePolicy();
 
             app.UseStaticFiles();
 
@@ -118,9 +134,16 @@ namespace WebApp_Service_Provider_DotNet
         private void ConfigureFranceConnect(OpenIdConnectOptions oidc_options, FranceConnectConfiguration fcConfig)
         {
 
+            //FC refuses unknown parameters in the requests, so the two following options are needed 
+            oidc_options.DisableTelemetry = true; //This is false by default on .NET Core 3.1, and sends additional parameters such as "x-client-ver" in the requests to FC.
+            oidc_options.UsePkce = false; //This is true by default on .NET Core 3.1, and sends additional parameters such as "code_challenge" in the requests to FC.
+
+            oidc_options.SaveTokens = true;//This is needed to keep the id_token obtained for authentication : we have to send it back to FC to logout.
+
             oidc_options.ClientId = fcConfig.ClientId;
             oidc_options.ClientSecret = fcConfig.ClientSecret;
-
+            oidc_options.CallbackPath = fcConfig.CallbackPath;
+            oidc_options.SignedOutCallbackPath = fcConfig.SignedOutCallbackPath;
             oidc_options.Authority = fcConfig.Issuer;
             oidc_options.ResponseType = OpenIdConnectResponseType.Code;
             oidc_options.Scope.Clear();
@@ -138,6 +161,11 @@ namespace WebApp_Service_Provider_DotNet
                 UserInfoEndpoint = fcConfig.UserInfoEndpoint,
                 EndSessionEndpoint = fcConfig.EndSessionEndpoint,
             };
+            // We specify claims to be kept, as .NET Core 2.0+ doesn't keep claims it does not expect.
+            oidc_options.ClaimActions.MapUniqueJsonKey("birthcountry", "birthcountry");
+            oidc_options.ClaimActions.MapUniqueJsonKey("birthdate", "birthdate");
+            oidc_options.ClaimActions.MapUniqueJsonKey("birthplace", "birthplace");
+            oidc_options.ClaimActions.MapUniqueJsonKey("gender", "gender");
 
         }
     }
