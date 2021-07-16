@@ -6,7 +6,6 @@ on:
     branches:
         - master
         - develop
-        - github-actions
 env:
   AZURE_WEBAPP_NAME: franceconnect-service-provider-dotnet-webapp-aspnetcore
   AZURE_WEBAPP_PACKAGE_PATH: Source/WebApp-Service-Provider-DotNet/publish
