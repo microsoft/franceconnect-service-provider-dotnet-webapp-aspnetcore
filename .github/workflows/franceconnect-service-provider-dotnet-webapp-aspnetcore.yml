@@ -1,0 +1,45 @@
+name: Build and deploy .NET Core app to Windows WebApp franceconnect-service-provider-dotnet-webapp-aspnetcore
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+        - master
+        - develop
+        - github-actions
+env:
+  AZURE_WEBAPP_NAME: franceconnect-service-provider-dotnet-webapp-aspnetcore
+  AZURE_WEBAPP_PACKAGE_PATH: Source/WebApp-Service-Provider-DotNet/publish
+  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.franceconnect_service_provider_dotnet_webapp_aspnetcore_95ac }}
+  CONFIGURATION: Development
+  DOTNET_CORE_VERSION: 3.1.x
+  WORKING_DIRECTORY: Source/WebApp-Service-Provider-DotNet/
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    - name: Restore
+      run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
+    - name: Build
+      run: dotnet build "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} --no-restore
+    - name: Test
+      run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
+    - name: Publish
+      run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} /p:UseAppHost=false --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+    - name: Deploy to Azure WebApp
+      if: ${{ github.event_name != 'pull_request' }}
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
