@@ -96,6 +96,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 scope: string.Join(" ", scope),
                 redirectUri: GetConsentRedirectUri(),
                 state: state,
+                acrValues: _config.EIdas,
                 nonce: Guid.NewGuid().ToString("N")));
         }
 
