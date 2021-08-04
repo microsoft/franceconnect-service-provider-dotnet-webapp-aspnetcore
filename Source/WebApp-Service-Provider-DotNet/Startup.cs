@@ -35,6 +35,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -80,8 +81,9 @@ namespace WebApp_Service_Provider_DotNet
             {
                 options.MinimumSameSitePolicy = SameSiteMode.Lax;
             });
-            services.Configure<FranceConnectConfiguration>(Configuration.GetSection("FranceConnect"));
-            var franceConnectConfig = Configuration.GetSection("FranceConnect").Get<FranceConnectConfiguration>();
+
+            IConfiguration franceConnectConfig = Configuration.GetSection("FranceConnect");
+            services.Configure<FranceConnectConfiguration>(franceConnectConfig);
 
             services.AddAuthentication(
                 options =>
@@ -89,7 +91,7 @@ namespace WebApp_Service_Provider_DotNet
                     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = Scheme.FranceConnect;
                 })
-                .AddOpenIdConnect(Scheme.FranceConnect, Scheme.FranceConnectDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig));
+                .AddOpenIdConnect(Scheme.FranceConnect, Scheme.FranceConnectDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig.Get<FranceConnectConfiguration>()));
 
             services.AddControllersWithViews();
 
@@ -98,7 +100,7 @@ namespace WebApp_Service_Provider_DotNet
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<FranceConnectConfiguration> franceConnectConfig)
         {
             if (env.IsDevelopment())
             {
@@ -129,6 +131,10 @@ namespace WebApp_Service_Provider_DotNet
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                if (franceConnectConfig.Value.DataCallbackPath != null)
+                {
+                    endpoints.MapControllerRoute("data-consent-callback", franceConnectConfig.Value.DataCallbackPath, new { controller = "Data", action = "GetResourceCallback" });
+                }
             });
         }
         private void ConfigureFranceConnect(OpenIdConnectOptions oidc_options, FranceConnectConfiguration fcConfig)

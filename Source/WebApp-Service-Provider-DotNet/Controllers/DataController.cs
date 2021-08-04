@@ -100,7 +100,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         }
 
         //
-        // GET: /Data/ConsentCallback
+        // GET: /Data/GetResourceCallback, or the data callback url specified in appsettings
         [HttpGet]
         public async Task<IActionResult> GetResourceCallback(string code, string state)
         {
@@ -146,7 +146,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         }
 
         //
-        // GET: /Data/GetResourceCallback
+        // GET: /Data/Resource
         [HttpGet]
         public async Task<IActionResult> Resource()
         {
@@ -224,7 +224,9 @@ namespace WebApp_Service_Provider_DotNet.Controllers
 
         private string GetConsentRedirectUri()
         {
-            return Request.Scheme + "://" + Request.Host + Url.Action(nameof(GetResourceCallback));
+            return _config.DataCallbackPath != null
+                ? Request.Scheme + "://" + Request.Host + _config.DataCallbackPath
+                : Request.Scheme + "://" + Request.Host + Url.Action(nameof(GetResourceCallback));
         }
 
         private string Base64Encode(string text)
