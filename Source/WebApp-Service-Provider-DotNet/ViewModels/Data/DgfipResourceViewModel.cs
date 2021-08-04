@@ -31,6 +31,7 @@ namespace WebApp_Service_Provider_DotNet.ViewModels.Data
         public char SitFam { get; set; }
         public int NbPart { get; set; }
         public Pac Pac { get; set; }
+        public string aft { get; set; }
     }
 
     public class Pac
