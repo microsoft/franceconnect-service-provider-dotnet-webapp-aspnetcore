@@ -47,13 +47,15 @@ namespace WebApp_Service_Provider_DotNet
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            Env = env;
             Configuration = configuration;
             // Configuration loads behind the scenes since 2.0, with sources defined in program.cs https://docs.microsoft.com/en-us/aspnet/core/migration/1x-to-2x/?view=aspnetcore-3.1#add-configuration-providers
         }
 
         public IConfiguration Configuration { get; set; }
+        public IWebHostEnvironment Env { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -67,7 +69,16 @@ namespace WebApp_Service_Provider_DotNet
 
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                {
+                    if (Env.IsProduction())
+                    {
+                        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                    }
+                    else
+                    {
+                        options.UseSqlite(Configuration.GetConnectionString("SqliteConnection"));
+                    }
+                });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -100,19 +111,23 @@ namespace WebApp_Service_Provider_DotNet
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<FranceConnectConfiguration> franceConnectConfig)
+        public void Configure(IApplicationBuilder app, ApplicationDbContext dbContext, IOptions<FranceConnectConfiguration> franceConnectConfig)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseBrowserLink();
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
-            else
+            if (Env.IsProduction())
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
                 app.UseHttpsRedirection();
+            }
+            else
+            {
+                app.UseBrowserLink();
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+
+                // Apply any pending database migrations on startup (includes initial db creation)
+                dbContext.Database.Migrate();
+                //Not recommended for production databases. See https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying#apply-migrations-at-runtime
             }
 
             app.UseRequestLocalization(new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("fr-FR") });
@@ -148,7 +163,7 @@ namespace WebApp_Service_Provider_DotNet
             oidc_options.ProtocolValidator.RequireTimeStampInNonce = false;//https://docs.microsoft.com/en-us/dotnet/api/microsoft.identitymodel.protocols.openidconnect.openidconnectprotocolvalidator.requiretimestampinnonce
 
             oidc_options.SaveTokens = true;//This is needed to keep the id_token obtained for authentication : we have to send it back to FC to logout.
-            
+
             oidc_options.ClientId = fcConfig.ClientId;
             oidc_options.ClientSecret = fcConfig.ClientSecret;
             oidc_options.CallbackPath = fcConfig.CallbackPath;
