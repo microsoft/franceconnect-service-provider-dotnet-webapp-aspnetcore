@@ -89,7 +89,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             Response.Cookies.Delete("consent");
             Response.Cookies.Append("consent", Base64Encode(json), new CookieOptions { Expires = DateTimeOffset.Now.AddMinutes(15) });
 
-            var authorizeRequest = new AuthorizeRequest(_config.AuthorizationEndpoint);
+            var authorizeRequest = new RequestUrl(_config.AuthorizationEndpoint);
             return Redirect(authorizeRequest.CreateAuthorizeUrl(
                 clientId: _config.ClientId,
                 responseType: "code",
@@ -131,8 +131,17 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 throw new ArgumentException("Invalid state");
             }
 
-            var tokenClient = new TokenClient(_config.TokenEndpoint, _config.ClientId, _config.ClientSecret, AuthenticationStyle.PostValues);
-            var tokenResponse = await tokenClient.RequestAuthorizationCodeAsync(code, GetConsentRedirectUri());
+            var tokenClient = new HttpClient();
+            var tokenResponse = await tokenClient.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
+            {
+                Address = _config.TokenEndpoint,
+                ClientId = _config.ClientId,
+                ClientSecret = _config.ClientSecret,
+                Method = HttpMethod.Post,
+                Code = code,
+                RedirectUri = GetConsentRedirectUri()
+            }
+                );
             if (tokenResponse.IsError || string.IsNullOrEmpty(tokenResponse.AccessToken))
             {
                 throw new Exception("Unable to retrieve access token");
