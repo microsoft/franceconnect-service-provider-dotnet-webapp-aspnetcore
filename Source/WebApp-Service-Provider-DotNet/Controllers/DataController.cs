@@ -33,7 +33,7 @@ using Microsoft.AspNetCore.Identity;
 using WebApp_Service_Provider_DotNet.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+using System.Text.Json;
 using WebApp_Service_Provider_DotNet.ViewModels.Data;
 using System.Net.Http;
 using System.Net;
@@ -81,7 +81,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             var scope = new List<string> { "openid", "email" };
             scope.AddRange(_config.DataProviders.FirstOrDefault(dp => dp.Name == provider).Scopes);
 
-            var json = JsonConvert.SerializeObject(new ConsentCookie
+            var json = JsonSerializer.Serialize(new ConsentCookie
             {
                 Provider = provider,
                 State = state
@@ -89,18 +89,19 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             Response.Cookies.Delete("consent");
             Response.Cookies.Append("consent", Base64Encode(json), new CookieOptions { Expires = DateTimeOffset.Now.AddMinutes(15) });
 
-            var authorizeRequest = new AuthorizeRequest(_config.AuthorizationEndpoint);
+            var authorizeRequest = new RequestUrl(_config.AuthorizationEndpoint);
             return Redirect(authorizeRequest.CreateAuthorizeUrl(
                 clientId: _config.ClientId,
                 responseType: "code",
                 scope: string.Join(" ", scope),
                 redirectUri: GetConsentRedirectUri(),
                 state: state,
+                acrValues: _config.EIdas,
                 nonce: Guid.NewGuid().ToString("N")));
         }
 
         //
-        // GET: /Data/ConsentCallback
+        // GET: /Data/GetResourceCallback, or the data callback url specified in appsettings
         [HttpGet]
         public async Task<IActionResult> GetResourceCallback(string code, string state)
         {
@@ -109,7 +110,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             try
             {
                 json = Base64Decode(Request.Cookies["consent"]);
-                consentCookie = JsonConvert.DeserializeObject<ConsentCookie>(json);
+                consentCookie = JsonSerializer.Deserialize<ConsentCookie>(json);
                 Response.Cookies.Delete("consent");
             }
             catch (Exception)
@@ -130,8 +131,17 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 throw new ArgumentException("Invalid state");
             }
 
-            var tokenClient = new TokenClient(_config.TokenEndpoint, _config.ClientId, _config.ClientSecret, AuthenticationStyle.PostValues);
-            var tokenResponse = await tokenClient.RequestAuthorizationCodeAsync(code, GetConsentRedirectUri());
+            var tokenClient = new HttpClient();
+            var tokenResponse = await tokenClient.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
+            {
+                Address = _config.TokenEndpoint,
+                ClientId = _config.ClientId,
+                ClientSecret = _config.ClientSecret,
+                Method = HttpMethod.Post,
+                Code = code,
+                RedirectUri = GetConsentRedirectUri()
+            }
+                );
             if (tokenResponse.IsError || string.IsNullOrEmpty(tokenResponse.AccessToken))
             {
                 throw new Exception("Unable to retrieve access token");
@@ -139,14 +149,14 @@ namespace WebApp_Service_Provider_DotNet.Controllers
 
             consentCookie.State = null;
             consentCookie.Token = tokenResponse.AccessToken;
-            json = JsonConvert.SerializeObject(consentCookie);
+            json = JsonSerializer.Serialize(consentCookie);
             Response.Cookies.Append("consent", Base64Encode(json), new CookieOptions { Expires = DateTimeOffset.Now.AddMinutes(15) });
 
             return RedirectToAction(nameof(Resource));
         }
 
         //
-        // GET: /Data/GetResourceCallback
+        // GET: /Data/Resource
         [HttpGet]
         public async Task<IActionResult> Resource()
         {
@@ -154,11 +164,11 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             try
             {
                 var json = Base64Decode(Request.Cookies["consent"]);
-                consentCookie = JsonConvert.DeserializeObject<ConsentCookie>(json);
+                consentCookie = JsonSerializer.Deserialize<ConsentCookie>(json);
             }
             catch (Exception)
             {
-                ViewData["Message"] = "Impossible d'obtenir l'autorisation d'accès aux ressources, veuillez réessayer.";
+                ViewData["Message"] = "Impossible d'obtenir l'autorisation d'accÃ¨s aux ressources, veuillez rÃ©essayer.";
                 return View();
             }
 
@@ -168,21 +178,30 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var resource = await response.Content.ReadAsStringAsync();
-                return View(ConvertResource(resource, consentCookie.Provider));
+                BaseResourceViewModel resourceViewModel = null;
+                try
+                {
+                    resourceViewModel = ConvertResource(resource, consentCookie.Provider);
+                }
+                catch (JsonException)
+                {
+                    ViewData["Message"] = "Les donnÃ©es n'ont pas pu Ãªtre dÃ©serialisÃ©es.";
+                }
+                return View(resourceViewModel);
             }
             else if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                ViewData["Message"] = "La ressource demandée n'a pas été trouvée.";
+                ViewData["Message"] = "La ressource demandÃ©e n'a pas Ã©tÃ© trouvÃ©e.";
                 return View();
             }
             else if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                ViewData["Message"] = "Vous n'êtes pas autorisé à accéder cette ressource.";
+                ViewData["Message"] = "Vous n'Ãªtes pas autorisÃ© Ã  accÃ©der cette ressource.";
                 return View();
             }
             else
             {
-                ViewData["Message"] = "Impossible de récupérer les données auprès du fournisseur choisi.";
+                ViewData["Message"] = "Impossible de rÃ©cupÃ©rer les donnÃ©es auprÃ¨s du fournisseur choisi.";
                 return View();
             }
         }
@@ -201,9 +220,9 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             switch (scheme)
             {
                 case "DGFIP":
-                    return JsonConvert.DeserializeObject<DgfipResourceViewModel>(json);
+                    return JsonSerializer.Deserialize<DgfipResourceViewModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 case "Custom":
-                    return JsonConvert.DeserializeObject<CustomResourceViewModel>(json);
+                    return JsonSerializer.Deserialize<CustomResourceViewModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 default:
                     throw new NotImplementedException();
             }
@@ -224,7 +243,9 @@ namespace WebApp_Service_Provider_DotNet.Controllers
 
         private string GetConsentRedirectUri()
         {
-            return Request.Scheme + "://" + Request.Host + Url.Action(nameof(GetResourceCallback));
+            return _config.DataCallbackPath != null
+                ? Request.Scheme + "://" + Request.Host + _config.DataCallbackPath
+                : Request.Scheme + "://" + Request.Host + Url.Action(nameof(GetResourceCallback));
         }
 
         private string Base64Encode(string text)

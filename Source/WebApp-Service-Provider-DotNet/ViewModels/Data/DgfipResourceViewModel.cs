@@ -27,14 +27,15 @@ namespace WebApp_Service_Provider_DotNet.ViewModels.Data
 {
     public class DgfipResourceViewModel : BaseResourceViewModel
     {
-        public decimal Rfr { get; set; }
+        public string Rfr { get; set; }
         public char SitFam { get; set; }
-        public int NbPart { get; set; }
+        public string NbPart { get; set; }
         public Pac Pac { get; set; }
+        public string aft { get; set; }
     }
 
     public class Pac
     {
-        public int NbPac { get; set; }
+        public string NbPac { get; set; }
     }
 }
