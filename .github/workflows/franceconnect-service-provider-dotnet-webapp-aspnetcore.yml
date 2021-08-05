@@ -25,6 +25,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
     - name: Restore dotnet tools
       run: dotnet tool restore
+      working-directory: ${{ env.WORKING_DIRECTORY }}
     - name: Restore
       run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
     - name: Build
@@ -49,5 +50,7 @@ jobs:
         publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
         
     - name: Apply database migrations
-      run: |
-        dotnet ef database update
+      run: dotnet ef database update
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      env:
+          FRANCECONNECT__CLIENTSECRET: "Dummy value in order for the project to pass startup checks"
