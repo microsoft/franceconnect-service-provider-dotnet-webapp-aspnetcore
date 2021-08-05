@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <PreserveCompilationContext>true</PreserveCompilationContext>
-    <AssemblyName>WebApp-Service-Provider</AssemblyName>
-    <PackageId>WebApp-Service-Provider</PackageId>
-    <UserSecretsId>aspnet-WebApp_Service_Provider_DotNet-83512670-8c0d-4168-be43-1cf3f98de941</UserSecretsId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<PreserveCompilationContext>true</PreserveCompilationContext>
+		<AssemblyName>WebApp-Service-Provider</AssemblyName>
+		<PackageId>WebApp-Service-Provider</PackageId>
+		<UserSecretsId>aspnet-WebApp_Service_Provider_DotNet-83512670-8c0d-4168-be43-1cf3f98de941</UserSecretsId>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Update="wwwroot\**\*;Views\**\*;Areas\**\Views">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="wwwroot\**\*;Views\**\*;Areas\**\Views">
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
 
 
 	<ItemGroup>
@@ -22,8 +22,8 @@
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.17" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.17" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.17">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.17" />
 		
@@ -31,13 +31,13 @@
 		<PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" PrivateAssets="All" />
 	</ItemGroup>
-	
-  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
-    <Exec Command="dotnet tool restore" />
-    <Exec Command="dotnet libman restore" />
-    <Exec Command="npm install" />
-    <Exec Command="gulp clean" />
-    <Exec Command="gulp min" />
-  </Target>
+
+	<Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+		<Exec Command="dotnet tool restore" />
+		<Exec Command="dotnet libman restore" />
+		<Exec Command="npm install" />
+		<Exec Command="gulp clean" />
+		<Exec Command="gulp min" />
+	</Target>
 
 </Project>
