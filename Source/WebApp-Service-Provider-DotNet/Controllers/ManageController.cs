@@ -255,7 +255,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                throw new NotSupportedException("Can not retrive external claims");
+                throw new NotSupportedException("Can not retrieve external claims");
             }
             var claims = info.Principal.Claims;
             var pivotIdentity = new PivotIdentity
