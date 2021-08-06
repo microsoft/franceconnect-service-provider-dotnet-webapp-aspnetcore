@@ -76,7 +76,7 @@ namespace WebApp_Service_Provider_DotNet
                     }
                     else
                     {
-                        // Sqlite is suggested for development environment, as the database is thus hosted on the filesystem instead of a server.
+                        // Sqlite is suggested for development environments, as the database is thus hosted on the filesystem instead of a server.
                         options.UseSqlite(Configuration.GetConnectionString("SqliteConnection"));
                     }
                 });
