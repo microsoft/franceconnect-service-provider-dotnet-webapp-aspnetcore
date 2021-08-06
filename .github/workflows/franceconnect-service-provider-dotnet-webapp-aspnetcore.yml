@@ -9,7 +9,8 @@ on:
 env:
   AZURE_WEBAPP_NAME: franceconnect-service-provider-dotnet-webapp-aspnetcore
   AZURE_WEBAPP_PACKAGE_PATH: Source/WebApp-Service-Provider-DotNet/publish
-  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.franceconnect_service_provider_dotnet_webapp_aspnetcore_95ac }}
+  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.webapp_publish_profile }}
+  CONNECTIONSSTRINGS__DEFAULTCONNECTION: ${{ secrets.database_connection_string }}
   CONFIGURATION: Development
   DOTNET_CORE_VERSION: 3.1.x
   WORKING_DIRECTORY: Source/WebApp-Service-Provider-DotNet/
@@ -22,6 +23,9 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+    - name: Restore dotnet tools
+      run: dotnet tool restore
+      working-directory: ${{ env.WORKING_DIRECTORY }}
     - name: Restore
       run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
     - name: Build
@@ -30,15 +34,25 @@ jobs:
       run: dotnet test "${{ env.WORKING_DIRECTORY }}" --no-build
     - name: Publish
       run: dotnet publish "${{ env.WORKING_DIRECTORY }}" --configuration ${{ env.CONFIGURATION }} /p:UseAppHost=false --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+      
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: webapp
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
     - name: Deploy to Azure WebApp
+      id: deploy
       if: ${{ github.event_name != 'pull_request' }}
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
         publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
-    - name: Publish Artifacts
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: webapp
-        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        
+    - name: Apply database migrations
+      if: ${{ steps.deploy.conclusion == 'success' }}
+      run: dotnet ef database update
+      working-directory: ${{ env.WORKING_DIRECTORY }}
+      env:
+          FRANCECONNECT__CLIENTSECRET: "Dummy value in order for the project to pass startup checks"
