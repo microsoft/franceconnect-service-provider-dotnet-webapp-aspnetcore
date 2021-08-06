@@ -76,6 +76,7 @@ namespace WebApp_Service_Provider_DotNet
                     }
                     else
                     {
+                        // Sqlite is suggested for development environment, as the database is thus hosted on the filesystem instead of a server.
                         options.UseSqlite(Configuration.GetConnectionString("SqliteConnection"));
                     }
                 });
@@ -87,7 +88,7 @@ namespace WebApp_Service_Provider_DotNet
             // Add configuration
             services.AddOptions();
 
-            //Since chromium updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
+            // Since chromium updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.MinimumSameSitePolicy = SameSiteMode.Lax;
@@ -127,7 +128,7 @@ namespace WebApp_Service_Provider_DotNet
 
                 // Apply any pending database migrations on startup (includes initial db creation)
                 dbContext.Database.Migrate();
-                //Not recommended for production databases. See https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying#apply-migrations-at-runtime
+                // This is not recommended for production databases. See https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying#apply-migrations-at-runtime
             }
 
             app.UseRequestLocalization(new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("fr-FR") });
