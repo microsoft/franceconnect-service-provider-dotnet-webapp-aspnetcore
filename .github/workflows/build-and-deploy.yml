@@ -1,4 +1,4 @@
-name: Build and deploy .NET Core app to Windows WebApp franceconnect-service-provider-dotnet-webapp-aspnetcore
+name: Build and deploy .NET Core app to WebApp franceconnect-service-provider-dotnet-webapp-aspnetcore
 on:
   workflow_dispatch:
   pull_request:
@@ -10,13 +10,13 @@ env:
   AZURE_WEBAPP_NAME: franceconnect-service-provider-dotnet-webapp-aspnetcore
   AZURE_WEBAPP_PACKAGE_PATH: Source/WebApp-Service-Provider-DotNet/publish
   AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.webapp_publish_profile }}
-  CONNECTIONSSTRINGS__DEFAULTCONNECTION: ${{ secrets.database_connection_string }}
+  CONNECTIONSTRINGS__DEFAULTCONNECTION: ${{ secrets.database_connection_string }}
   CONFIGURATION: Development
   DOTNET_CORE_VERSION: 3.1.x
   WORKING_DIRECTORY: Source/WebApp-Service-Provider-DotNet/
 jobs:
   build-and-deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
@@ -56,3 +56,4 @@ jobs:
       working-directory: ${{ env.WORKING_DIRECTORY }}
       env:
           FRANCECONNECT__CLIENTSECRET: "Dummy value in order for the project to pass startup checks"
+          ASPNETCORE_ENVIRONMENT: ${{ env.CONFIGURATION }}
