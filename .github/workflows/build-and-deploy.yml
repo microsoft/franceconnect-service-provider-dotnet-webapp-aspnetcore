@@ -53,9 +53,8 @@ jobs:
         publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
         
     - name: Apply database migrations
-      if: ${{ steps.deploy.conclusion == 'success' }}
-      run: dotnet ef database update
-      working-directory: ${{ env.WORKING_DIRECTORY }}
+      if: ${{ steps.deploy.conclusion == 'success' && env.CONFIGURATION == 'Production' }}
+      run: dotnet ef database update --project ${{ env.WORKING_DIRECTORY }}"
       env:
           FRANCECONNECT__CLIENTSECRET: "Dummy value in order for the project to pass startup checks"
           ASPNETCORE_ENVIRONMENT: ${{ env.CONFIGURATION }}

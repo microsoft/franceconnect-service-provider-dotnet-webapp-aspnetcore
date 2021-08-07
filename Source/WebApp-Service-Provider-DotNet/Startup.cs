@@ -76,8 +76,8 @@ namespace WebApp_Service_Provider_DotNet
                     }
                     else
                     {
-                        // Sqlite is suggested for development environments, as the database is thus hosted on the filesystem instead of a server.
-                        options.UseSqlite(Configuration.GetConnectionString("SqliteConnection"));
+                        // Suggested for development environments, as the database is thus hosted with the web app instead of a separate server.
+                        options.UseInMemoryDatabase("InMemory");
                     }
                 });
 
@@ -125,10 +125,6 @@ namespace WebApp_Service_Provider_DotNet
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-
-                // Apply any pending database migrations on startup (includes initial db creation)
-                dbContext.Database.Migrate();
-                // This is not recommended for production databases. See https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying#apply-migrations-at-runtime
             }
 
             app.UseRequestLocalization(new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("fr-FR") });
