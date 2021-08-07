@@ -54,7 +54,7 @@ jobs:
         
     - name: Apply database migrations
       if: ${{ steps.deploy.conclusion == 'success' && env.CONFIGURATION == 'Production' }}
-      run: dotnet ef database update --project ${{ env.WORKING_DIRECTORY }}"
+      run: dotnet ef database update --project "${{ env.WORKING_DIRECTORY }}"
       env:
           FRANCECONNECT__CLIENTSECRET: "Dummy value in order for the project to pass startup checks"
           ASPNETCORE_ENVIRONMENT: ${{ env.CONFIGURATION }}
