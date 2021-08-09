@@ -15,7 +15,7 @@ env:
   CONNECTIONSTRINGS__DEFAULTCONNECTION: ${{ secrets.database_connection_string }}
   CONFIGURATION: Debug
   ASPNETCORE_ENVIRONMENT: Development
-  DOTNET_CORE_VERSION: 3.1.x
+  DOTNET_CORE_VERSION: 5.0.x
   WORKING_DIRECTORY: Source/WebApp-Service-Provider-DotNet/
 jobs:
   build-and-deploy:
