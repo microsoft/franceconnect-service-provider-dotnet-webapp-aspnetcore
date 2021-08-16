@@ -68,7 +68,7 @@ Pour publier votre fournisseur de service dans Microsoft Azure depuis Visual Stu
 ![Creation d'un profil de publication](Ressources/VS-publish-new.png)
 
 3. Sélectionnez ***Azure***, puis ***Azure App Service*** sous Windows ou Linux, selon l’option que vous avez choisi lors de la création de votre web app sur le portail Azure
-![Choix d'une cible de publication](Ressources/VS-publish-Azure.png)
+![Choix d'une cible de publication](Ressources/VS-Publish-Azure.png)
 4. Sélectionnez l’application web que vous avez créé précédemment.
 5. Sélectionnez ***Publish*** puis ***Finish***.
 6. Le profil de publication est prêt, et le statut de ce dernier s'affiche. Vous pouvez alors personnaliser la configuration à l'aide de l'option **Show all settings**
