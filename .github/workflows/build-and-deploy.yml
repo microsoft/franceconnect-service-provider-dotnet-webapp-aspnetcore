@@ -13,7 +13,8 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: Source/WebApp-Service-Provider-DotNet/publish
   AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.webapp_publish_profile }}
   CONNECTIONSTRINGS__DEFAULTCONNECTION: ${{ secrets.database_connection_string }}
-  CONFIGURATION: Development
+  CONFIGURATION: Debug
+  ASPNETCORE_ENVIRONMENT: Development
   DOTNET_CORE_VERSION: 3.1.x
   WORKING_DIRECTORY: Source/WebApp-Service-Provider-DotNet/
 jobs:
@@ -53,8 +54,7 @@ jobs:
         publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
         
     - name: Apply database migrations
-      if: ${{ steps.deploy.conclusion == 'success' && env.CONFIGURATION == 'Production' }}
+      if: ${{ steps.deploy.conclusion == 'success' && env.ASPNETCORE_ENVIRONMENT == 'Production' }}
       run: dotnet ef database update --project "${{ env.WORKING_DIRECTORY }}"
       env:
           FRANCECONNECT__CLIENTSECRET: "Dummy value in order for the project to pass startup checks"
-          ASPNETCORE_ENVIRONMENT: ${{ env.CONFIGURATION }}
