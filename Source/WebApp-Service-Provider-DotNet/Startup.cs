@@ -154,7 +154,7 @@ namespace WebApp_Service_Provider_DotNet
 
             //FC refuses unknown parameters in the requests, so the two following options are needed 
             oidc_options.DisableTelemetry = true; //This is false by default on .NET Core 3.1, and sends additional parameters such as "x-client-ver" in the requests to FC.
-            oidc_options.UsePkce = false; //This is true by default on .NET Core 3.1, and enables additional parameters such as "code_challenge" in the requests to FC.
+            oidc_options.UsePkce = false; //This is true by default on .NET Core 3.1, and enables the PKCE mechanism which sends additional parameters such as "code_challenge" in the requests to FC.
 
             //FC errors out (in the logout flow, with a E000031 undocumented error) when parsing an id token with a dot in the nonce. We use this option so that the nonce does not contain a dot.
             oidc_options.ProtocolValidator.RequireTimeStampInNonce = false;//https://docs.microsoft.com/en-us/dotnet/api/microsoft.identitymodel.protocols.openidconnect.openidconnectprotocolvalidator.requiretimestampinnonce
