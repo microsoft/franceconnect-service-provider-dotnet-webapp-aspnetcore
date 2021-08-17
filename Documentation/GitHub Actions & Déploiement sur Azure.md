@@ -4,14 +4,13 @@ Ce guide illustre le déploiement du kit de démarrage dans un environnement Mic
 
 ## Sommaire
 
-- [Sommaire](#sommaire)
 - [Mise en place de l'environnement Azure](#mise-en-place-de-lenvironnement-azure)
 - [Déploiement](#déploiement)
   - [A. Déploiement manuel à l'aide de Visual Studio 2019](#a-déploiement-manuel-à-laide-de-visual-studio-2019)
   - [B. Déploiement manuel à l'aide de Visual Studio Code](#b-déploiement-manuel-à-laide-de-visual-studio-code)
-  - [Execution manuelle de la migration d'une base de données](#execution-manuelle-de-la-migration-dune-base-de-données)
+  - [Exécution manuelle de la migration d'une base de données](#exécution-manuelle-de-la-migration-dune-base-de-données)
     - [Préparation de l'environnement SQL sur Azure](#préparation-de-lenvironnement-sql-sur-azure)
-    - [Execution de la migration depuis la machine locale](#execution-de-la-migration-depuis-la-machine-locale)
+    - [Exécution de la migration depuis la machine locale](#exécution-de-la-migration-depuis-la-machine-locale)
 - [Intégration et déploiement en continu à l’aide de pipeline CI/CD GitHub Actions](#intégration-et-déploiement-en-continu-à-laide-de-pipeline-cicd-github-actions)
   - [Conditions d'activation](#conditions-dactivation)
   - [Mise en place des variables d’environnement & secrets GitHub](#mise-en-place-des-variables-denvironnement--secrets-github)
@@ -65,7 +64,7 @@ Pour publier votre fournisseur de service dans Microsoft Azure depuis Visual Stu
 
 1. Dans l'**explorateur de solutions** Visual Studio (sur la droite par défaut), faites un clic droit sur votre projet et sélectionnez ***Publish***
 2. Créez un nouveau profil de publication en sélectionnant ***New*** ou ***Add a publish profile***
-![Creation d'un profil de publication](Ressources/VS-publish-new.png)
+![Création d'un profil de publication](Ressources/VS-publish-new.png)
 
 3. Sélectionnez ***Azure***, puis ***Azure App Service*** sous Windows ou Linux, selon l’option que vous avez choisi lors de la création de votre web app sur le portail Azure
 ![Choix d'une cible de publication](Ressources/VS-Publish-Azure.png)
@@ -80,7 +79,7 @@ Pour publier votre fournisseur de service dans Microsoft Azure depuis Visual Stu
    ![Appliquer les migrations lors de la publication](Ressources/VS-Publish-apply-on-publish.png)
    > Cette option n'est aujourd'hui disponible uniquement dans le cas d'un déploiement vers un hôte Windows. Dans le cas contraire, il faudra effectuer manuellement cette opération.
    >
-   > La procédure pour ce faire est indiquée dans la section [Execution manuelle de la migration d'une base de données](#execution-manuelle-de-la-migration-dune-base-de-données)
+   > La procédure pour ce faire est indiquée dans la section [Exécution manuelle de la migration d'une base de données](#exécution-manuelle-de-la-migration-dune-base-de-données)
 
 8. Une fois tous les paramètres confirmés et sauvegardés, publier l’application est réalisable à l’aide du bouton **Publish** sur l'écran de statut du profil de publication.
 
@@ -106,7 +105,7 @@ Pour publier votre fournisseur de service dans Microsoft Azure depuis Visual Stu
 
 5. Une fois votre application web prête, une notification vous propose de naviguer dessus. Selon votre environnement, il faut le cas échéant initialiser les tables de la base de données en exécutant une migration.
 
-### Execution manuelle de la migration d'une base de données
+### Exécution manuelle de la migration d'une base de données
 
 La migration d'une base de données est l'opération qui fait passer la base de données à un état initial (vide, par exemple), à un état désiré, avec les tables et contraintes attendues. Ces opérations sont gérées par Entity Framework Core.
 
@@ -124,15 +123,15 @@ Pour un serveur SQL instancié dans le Portail Azure, il faut configurer le pare
 
 ![Configuration pare feu Azure](Ressources/Azure-sql-server-firewall.png)
 
-> Si ce n'est pas déjà fait, récupérez également la chaîne de connexion à votre base de données, en vous rendant dans les paramètres de la base de données (et non du serveur comme ci dessus), et en sélectionnant l'onglet chaînes de connexion. Récupérez ainsi la chaîne de connexion .NET proposée, en la complétant à l'aide de vos identifiants.
+> Si ce n'est pas déjà fait, récupérez également la chaîne de connexion à votre base de données, en vous rendant dans les paramètres de la base de données (et non du serveur comme ci-dessus), et en sélectionnant l'onglet chaînes de connexion. Récupérez ainsi la chaîne de connexion .NET proposée, en la complétant à l'aide de vos identifiants.
 
-#### **Execution de la migration depuis la machine locale**
+#### **Exécution de la migration depuis la machine locale**
 
 > Prérequis :
 >
 > - Le [SDK .NET Core](https://dotnet.microsoft.com/download), installé automatiquement avec Visual Studio, ou manuellement.
 > - Une familiarité avec l'environnement ligne de commande de votre choix.
-> - Une machine capable de communiquer avec le serveur SQL (donc autorisée par les différents pare-feux, comme mis en place dans la section précédente.)
+> - Une machine capable de communiquer avec le serveur SQL (donc autorisée par les différents pares-feux, comme mis en place dans la section précédente.)
 
 1. Ouvrez une session en ligne de commandes de votre choix dans le dossier contenant les fichiers source du projet, tel que le fichier .csproj.
 2. Utilisez la commande `dotnet tool restore` afin d'installer les outils en ligne de commande d'Entity Framework Core dans l'environnement de votre projet.
@@ -168,7 +167,7 @@ jobs:
   # Taches à réaliser
 ```
 
-Les taches réalisées dans « jobs » sont la compilation et la publication de l’application empaquetée sous forme d’artefact sur Github (accessible en cliquant sur l’action dont on souhaite récupérer l’artefact), puis, le cas échéant, le déploiement sur Azure de cette application (dans le cas d’un push de code sur les branches principales), ainsi que la migration des bases de données associées si nécessaire.
+Les taches réalisées dans « jobs » sont la compilation et la publication de l’application empaquetée sous forme d’artefact sur GitHub (accessible en cliquant sur l’action dont on souhaite récupérer l’artefact), puis, le cas échéant, le déploiement sur Azure de cette application (dans le cas d’un push de code sur les branches principales), ainsi que la migration des bases de données associées si nécessaire.
 
 ### Conditions d'activation
 
@@ -200,8 +199,8 @@ Les chaînes de connexion et profil de publication étant des valeurs sensibles,
 
 #### 1. **Obtenir le profil de publication**
 
-Sur le [portail Azure][azure-portal], retrouvez l’App Service correspondant à votre application, que vous avez crée dans l’étape précédente.
-Vérifiez bien que le nom de l'application est celui que vous avez indiqué dans la variable « AZURE_WEBAPP_NAME » du fichier définissant la Github Action, et que les couples clés valeurs de configuration sont bien renseignés.
+Sur le [portail Azure][azure-portal], retrouvez l’App Service correspondant à votre application, que vous avez créé dans l’étape précédente.
+Vérifiez bien que le nom de l'application est celui que vous avez indiqué dans la variable « AZURE_WEBAPP_NAME » du fichier définissant la GitHub Action, et que les couples clés valeurs de configuration sont bien renseignés.
 
 Ensuite, dans l’onglet « Vue d’ensemble », Téléchargez le profil de publication avec le bouton correspondant, « Obtenir le profil de publication ».
 
@@ -221,11 +220,11 @@ Vous pouvez alors ajouter un secret avec le bouton dédié ***New repository sec
 
 Ajoutez ainsi le contenu de votre profil de publication dans un secret nommé **WEBAPP_PUBLISH_PROFILE**
 
-![Creation d'un secret](Ressources/GitHub-secret-creation.png)
+![Création d'un secret](Ressources/GitHub-secret-creation.png)
 
-Ajoutez de la même façon votre chaîne de connexion à la base de données dans un secret ***DATABASE_CONNECTION_STRING***, le cas échéant, afin que la migration de la base de données soit effectuée lors de l'execution de la pipeline.
+Ajoutez de la même façon votre chaîne de connexion à la base de données dans un secret ***DATABASE_CONNECTION_STRING***, le cas échéant, afin que la migration de la base de données soit effectuée lors de l'exécution de la pipeline.
 
-> Note : Pour cela, veillez à ce que le pare-feu de votre serveur SQL soit configuré pour **autoriser les services et les ressources Azure** à y accéder. Le processus est mentionné dans la section [Execution Manuelle d'une base de données > Préparation de l'environnement SQL sur Azure](#préparation-de-lenvironnement-sql-sur-azure)
+> Note : Pour cela, veillez à ce que le pare-feu de votre serveur SQL soit configuré pour **autoriser les services et les ressources Azure** à y accéder. Le processus est mentionné dans la section [Exécution Manuelle d'une base de données > Préparation de l'environnement SQL sur Azure](#préparation-de-lenvironnement-sql-sur-azure)
 
 Une fois ces variables prêtes, la pipeline sera donc lancée selon les conditions d’activation précédemment configurée, ou manuellement par le biais de l’interface GitHub, dans l’onglet ***Actions***, comme illustré ci-après.
 

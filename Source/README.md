@@ -12,9 +12,12 @@
 3. Mettez en place la configuration de votre choix, en ajustant le fichier appsettings.json
 4. Faites de même pour les éléments de configuration secrets, tels que le *ClientSecret* France Connect, à l'aide de la commande `dotnet user-secrets set "FranceConnect:ClientSecret" "VotreSecret"`.
 
-    Un set de *ClientId* & *ClientSecret* de développement est fourni par FranceConnect, et comporte des restrictions documentées [ici](https://partenaires.franceconnect.gouv.fr/fcp/fournisseur-service#sign_in)
-5. Par défaut dans un environnement de développement, les données sont persistées en mémoire, et donc effacées dès la clôture de l'application. Vous pouvez configurer une base de données SQL Server pour un environnement de Production. Ce scenario est développé plus en détail dans la documentation présente sur ce répertoire GitHub, [ici](../Documentation/GitHub%20Actions%20&%20Déploiement%20sur%20Azure.md)
+    Un set de *ClientId* & *ClientSecret* de développement local est fourni par FranceConnect, et comporte des restrictions documentées [ici](https://partenaires.franceconnect.gouv.fr/fcp/fournisseur-service#sign_in)
+5. Par défaut dans un environnement de développement, les données sont persistées en mémoire, et donc effacées dès la clôture de l'application. Vous pouvez configurer une base de données SQL Server pour un environnement de Production. Le cas échéant, veillez à exécuter la commande `dotnet ef database update` Ce scenario est développé plus en détail dans la documentation présente sur ce répertoire GitHub, [ici](../Documentation/GitHub%20Actions%20&%20Déploiement%20sur%20Azure.md).
 
 6. Lancez le projet à l'aide de la commande `dotnet run`.
 
    Vous pouvez alors naviguer vers le fournisseur de service à l'adresse configurée, par défaut <http://localhost:4242>, et tester les interactions de connexion ou d'accès à des données.
+
+
+Pour aller plus loin, vous pouvez également suivre ce [guide détaillé](/Documentation/GitHub%20Actions%20%26%20D%C3%A9ploiement%20sur%20Azure.md) pour le publier sur un environnement Cloud Azure 
