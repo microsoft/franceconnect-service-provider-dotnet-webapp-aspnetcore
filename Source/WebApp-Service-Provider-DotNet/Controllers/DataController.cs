@@ -185,13 +185,18 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 }
                 catch (JsonException)
                 {
-                    ViewData["Message"] = "Les données n'ont pas pu être déserialisées.";
+                    ViewData["Message"] = "Les données n'ont pas pu être désérialisées.";
                 }
                 return View(resourceViewModel);
             }
             else if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 ViewData["Message"] = "La ressource demandée n'a pas été trouvée.";
+                if (consentCookie.Provider=="Custom"){
+                    UriBuilder addDataUri= new UriBuilder(GetResourceUrl(consentCookie.Provider));
+                    addDataUri.Path="/Account/Register";
+                    ViewData["Register-url"] = addDataUri.Uri;
+                }
                 return View();
             }
             else if (response.StatusCode == HttpStatusCode.Unauthorized)
