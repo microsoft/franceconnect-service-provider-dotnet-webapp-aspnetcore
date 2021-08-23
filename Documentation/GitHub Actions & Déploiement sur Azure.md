@@ -149,7 +149,7 @@ Pour un serveur SQL instancié dans le Portail Azure, il faut configurer le pare
     export ConnectionStrings__DefaultConnection=VotreChaîneDeConnexion
     ```
 
-4. De la mème façon, créez une variable d'environnement **ASPNETCORE_ENVIRONMENT**, à la valeur "Production" afin d'exécuter la migration sur l'environnement de Production avec la base de données renseignée.
+4. De la même façon, créez une variable d'environnement **ASPNETCORE_ENVIRONMENT**, à la valeur "Production" afin d'exécuter la migration sur l'environnement de Production avec la base de données renseignée.
 5. Dans la même session ligne de commandes, exécutez enfin la commande `dotnet ef database update`, afin de lancer la migration de la base de données.
 
 ## Intégration et déploiement en continu à l’aide de pipeline CI/CD GitHub Actions
@@ -188,8 +188,8 @@ env:
   CONNECTIONSTRINGS__DEFAULTCONNECTION: ${{ secrets.database_connection_string }}
   AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.webapp_publish_profile }}
   AZURE_WEBAPP_NAME: franceconnect-service-provider-dotnet-webapp-aspnetcore
-  AZURE_WEBAPP_PACKAGE_PATH: Source/WebApi-Data-Provider-DotNet/publish
-  WORKING_DIRECTORY: Source/WebApi-Data-Provider-DotNet/
+  AZURE_WEBAPP_PACKAGE_PATH: Source/WebApp-Service-Provider-DotNet/publish
+  WORKING_DIRECTORY: Source/WebApp-Service-Provider-DotNet/
   CONFIGURATION: Debug
   ASPNETCORE_ENVIRONMENT: Development
   DOTNET_CORE_VERSION: 3.1.x
