@@ -88,22 +88,21 @@ namespace WebApp_Service_Provider_DotNet
             // Add configuration
             services.AddOptions();
 
-            // Since chromium updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.Lax;
-            });
-
             IConfiguration franceConnectConfig = Configuration.GetSection("FranceConnect");
             services.Configure<FranceConnectConfiguration>(franceConnectConfig);
 
             services.AddAuthentication(
                 options =>
                 {
-                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = Scheme.FranceConnect;
                 })
                 .AddOpenIdConnect(Scheme.FranceConnect, Scheme.FranceConnectDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig.Get<FranceConnectConfiguration>()));
+
+            // Since updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+            });
 
             services.AddControllersWithViews();
 
