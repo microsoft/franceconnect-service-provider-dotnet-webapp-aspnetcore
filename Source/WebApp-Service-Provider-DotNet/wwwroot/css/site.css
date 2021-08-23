@@ -75,16 +75,18 @@ body {
 
 /* FranceConnect button */
 .btn-fc {
-    background: url(../../images/FCboutons-10.png) no-repeat center;
-    background-image: url(../../images/FCboutons-10.svg);
+    background: url(/images/franceconnect-bouton.png) no-repeat center;
+    background-image: url(/images/franceconnect-bouton.svg);
     background-size: contain;
     height: 48px;
     width: 178px;
     border: none;
 }
+
 .btn-fc:hover {
-    background: url(../../images/FCboutons-11.png) no-repeat center;
-    background-image: url(../../images/FCboutons-11.svg);
+    background: url(/images/franceconnect-bouton-hover.png) no-repeat center;
+    background-image: url(/images/franceconnect-bouton-hover.svg);
+    background-size: contain;
 }
 
 /* Kit FranceConnect */
