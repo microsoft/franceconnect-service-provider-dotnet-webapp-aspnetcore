@@ -1,42 +1,51 @@
-﻿@model RegisterViewModel
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Authentication
+@model RegisterViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
 @{
     ViewData["Title"] = "Créer un compte";
 }
 
 <h2>@ViewData["Title"].</h2>
-
-<form asp-controller="Account" asp-action="Register" method="post" class="form-horizontal" role="form">
-    <h4>Créer un nouveau compte.</h4>
-    <hr />
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Email" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Account" asp-action="Register" method="post" class="form-horizontal" role="form">
+            <h4>Créer un nouveau compte.</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Créer un compte</button>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="Password" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Password" class="form-control" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h4>S'authentifier avec FranceConnect.</h4>
+            <hr />
+            @{
+                var franceConnectProvider = (await SignInManager.GetExternalAuthenticationSchemesAsync()).FirstOrDefault(auth => auth.Name == Scheme.FranceConnect);
+                <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+                    <button type="submit" class="btn-fc" name="provider" value="@franceConnectProvider.Name" title="Connectez vous avec votre compte @franceConnectProvider.DisplayName"></button>
+                </form>
+            }
+        </section>
     </div>
-    <div class="form-group">
-        <label asp-for="ConfirmPassword" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="ConfirmPassword" class="form-control" />
-            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-default">Créer un compte</button>
-        </div>
-    </div>
-</form>
+</div>
 
 @section Scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <partial name="_ValidationScriptsPartial" />
 }
