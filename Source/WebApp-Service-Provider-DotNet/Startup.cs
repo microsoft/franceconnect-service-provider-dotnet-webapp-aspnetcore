@@ -95,7 +95,6 @@ namespace WebApp_Service_Provider_DotNet
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
-                app.UseHttpsRedirection();
             }
             else
             {
@@ -104,6 +103,9 @@ namespace WebApp_Service_Provider_DotNet
                 app.UseDatabaseErrorPage();
             }
 
+            // Disable HTTPS when using the default FC credentials, as these are only configured for http URLs
+            app.UseHttpsRedirection();
+            
             app.UseRequestLocalization(new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("fr-FR") });
 
             app.UseCookiePolicy();
