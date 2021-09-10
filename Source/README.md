@@ -21,4 +21,4 @@
    Vous pouvez alors naviguer vers le fournisseur de service à l'adresse configurée, par défaut <http://localhost:4242>, et tester les interactions de connexion ou d'accès à des données.
 
 
-Pour aller plus loin, vous pouvez également suivre ce [guide détaillé](/Documentation/GitHub%20Actions%20%26%20D%C3%A9ploiement%20sur%20Azure.md) pour le publier sur un environnement Cloud Azure.
+Pour aller plus loin, vous pouvez également suivre  les documentations complètes, disponibles sous [le dossier /Documentation du répértoire](/Documentation/README.md), comportant notamment ce [guide détaillé](/Documentation/GitHub%20Actions%20%26%20D%C3%A9ploiement%20sur%20Azure.md) pour publier l'application sur un environnement Cloud Azure.
