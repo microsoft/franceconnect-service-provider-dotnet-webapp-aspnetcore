@@ -15,7 +15,7 @@ env:
   CONNECTIONSTRINGS__DEFAULTCONNECTION: ${{ secrets.database_connection_string }}
   CONFIGURATION: Debug
   ASPNETCORE_ENVIRONMENT: Development
-  DOTNET_CORE_VERSION: 5.0.x
+  DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: Source/WebApp-Service-Provider-DotNet/
 jobs:
   build-and-deploy:
@@ -26,6 +26,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
+        include-prerelease: true # TODO : Remove this line after .NET 6.0 official release.
     - name: Restore dotnet tools
       run: dotnet tool restore
       working-directory: ${{ env.WORKING_DIRECTORY }}
