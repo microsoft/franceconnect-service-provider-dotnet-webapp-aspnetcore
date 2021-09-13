@@ -36,7 +36,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Page de description de votre application.";
+            ViewData["Message"] = "Page de description de l'application.";
 
             return View();
         }
