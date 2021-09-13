@@ -1,27 +1,5 @@
-﻿//
-// The MIT License (MIT)
-// Copyright (c) 2016 Microsoft France
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-//
-// You may obtain a copy of the License at https://opensource.org/licenses/MIT
-//
+﻿// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -88,22 +66,21 @@ namespace WebApp_Service_Provider_DotNet
             // Add configuration
             services.AddOptions();
 
-            // Since chromium updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.Lax;
-            });
-
             IConfiguration franceConnectConfig = Configuration.GetSection("FranceConnect");
             services.Configure<FranceConnectConfiguration>(franceConnectConfig);
 
             services.AddAuthentication(
                 options =>
                 {
-                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = Scheme.FranceConnect;
                 })
                 .AddOpenIdConnect(Scheme.FranceConnect, Scheme.FranceConnectDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig.Get<FranceConnectConfiguration>()));
+
+            // Since updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+            });
 
             services.AddControllersWithViews();
 
@@ -118,7 +95,6 @@ namespace WebApp_Service_Provider_DotNet
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
-                app.UseHttpsRedirection();
             }
             else
             {
@@ -127,6 +103,9 @@ namespace WebApp_Service_Provider_DotNet
                 app.UseDatabaseErrorPage();
             }
 
+            // Disable HTTPS when using the default FC credentials, as these are only configured for http URLs
+            app.UseHttpsRedirection();
+            
             app.UseRequestLocalization(new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("fr-FR") });
 
             app.UseCookiePolicy();
