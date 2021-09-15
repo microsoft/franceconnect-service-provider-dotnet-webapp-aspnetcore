@@ -65,16 +65,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddSignInManager<FCSignInManager>()
     .AddClaimsPrincipalFactory<ApplicationUserClaimsPrincipalFactory>();
 
-builder.Services.AddAuthentication(
-    options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = FranceConnectConfiguration.ProviderScheme;
-    })
+builder.Services.AddAuthentication()
     .AddOpenIdConnect(FranceConnectConfiguration.ProviderScheme, FranceConnectConfiguration.ProviderDisplayName, oidc_options =>
-    {        
+    {
         var fcConfig = franceConnectConfig.Get<FranceConnectConfiguration>();
-        
+
         // FC refuses unknown parameters in the requests, so the two following options are needed 
         oidc_options.DisableTelemetry = true; // This is false by default on .NET Core 3.1, and sends additional parameters such as "x-client-ver" in the requests to FC.
         oidc_options.UsePkce = false; // This is true by default on .NET Core 3.1, and enables the PKCE mechanism which is not supported by FC.
@@ -140,7 +135,6 @@ if (app.Environment.IsProduction())
 else
 {
     app.UseBrowserLink();
-    app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 }
 
@@ -156,15 +150,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
+app.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
 
-app.UseEndpoints(endpoints =>
+string dataCallbackPath = franceConnectConfig.GetValue<string>("DataCallbackPath");
+if (dataCallbackPath != null)
 {
-    endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-    string dataCallbackPath = franceConnectConfig.GetValue<string>("DataCallbackPath");
-    if (dataCallbackPath != null)
-    {
-        endpoints.MapControllerRoute("data-consent-callback", dataCallbackPath, new { controller = "Data", action = "GetResourceCallback" });
-    }
-});
+    app.MapControllerRoute("data-consent-callback", dataCallbackPath, new { controller = "Data", action = "GetResourceCallback" });
+}
 
 app.Run();
