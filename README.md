@@ -1,9 +1,19 @@
 # Kit de démarrage FranceConnect - Fournisseur de service (FS)
 
-Ce projet exemple propose un canevas de site web en [ASP.NET Core](https://dotnet.microsoft.com/learn/aspnet/what-is-aspnet-core) qui s’appuie sur FranceConnect pour identifier les internautes qui le souhaitent. La version utilisée est ASP.NET Core 3.1 (LTS), ainsi que .NET 5.0 sur la branche concernée. Vous pouvez trouver sur ce répertoire **[la documentation associée](/Documentation)**.
+Ce projet exemple propose un canevas de site web en [ASP.NET Core](https://dotnet.microsoft.com/learn/aspnet/what-is-aspnet-core) qui s’appuie sur FranceConnect pour identifier les internautes qui le souhaitent.
 
-Le canevas ainsi proposé peut être executé localement en suivant **[le tutoriel de démarrage rapide](/Source/README.md)** fourni dans ce répertoire, ou être testé directement à l'adresse <https://aka.ms/FranceConnect-FS>, sur laquelle le code de ce répertoire GitHub est continuellement déployé. Utilisez un des fournisseurs d'identité de démonstration lors de la connexion.
+La version utilisée est ASP.NET Core 3.1 (LTS), ainsi que .NET 5.0/6.0 sur les branches concernées.
 
+Vous pouvez trouver sur ce répertoire **[la documentation associée](/Documentation)**, ainsi que le **[le guide de démarrage rapide](/Source/README.md)** afin d'executer le canevas localement.
+
+Celui-ci peut être testé directement à l'adresse <https://aka.ms/FranceConnect-FS>, à laquelle le code de ce répertoire GitHub est continuellement déployé. Utilisez un des fournisseurs d'identité de démonstration lors de la connexion.
+
+### Organisation du répertoire.
+Les différents éléments de documentation sont disponibles sous le dossier [/Documentation](/Documentation).
+Les différentes versions du kit sont rapidement accessibles à l'aide des *tags* définis, permettant de retrouver l'état du répértoire pour une version donnée. L'onglet "Releases" sur la droite est utilisable pour consulter aisément celles-ci.
+Les branches identifient les différent travaux en cours : *main* correspondant à la branche stable, develop à la branche de travail, et toute autre branche represente un ajout indivduel en cours de développement. Ce [schéma](/Documentation/Ressources/Branches.jpg) illustre le flux de travail. Le mode de contribution est également indiqué sous [CONTRIBUTING.md](/CONTRIBUTING.md)
+
+### FranceConnect 
 La plateforme [FranceConnect](https://franceconnect.gouv.fr/) est un système d’identification visant à faciliter l’accès des usagers aux services numériques de l’administration en ligne, en évitant à tout un chacun de devoir créer un nouveau compte lors de l’accès à un nouveau service et donc à se remémorer différents mots de passe pour l’ensemble des services accédés.
 
 Pour cela, le système FranceConnect permet à chaque usager de disposer d’un mécanisme d’identification reconnu par les téléservices de l’administration au travers du bouton FranceConnect. Lors de l’accès à un nouveau service, et au-delà de la possibilité toujours proposée de s’inscrire vis-à-vis d’une autorité administrative que ne connaîtrait pas encore l’usager, le bouton permet de sélectionner une identité compatible dont l’usager disposerait déjà (impôts, assurance maladie, identité numérique la poste, etc.) et de l’utiliser dans ce contexte.
