@@ -20,4 +20,4 @@ Pour cela, le système FranceConnect permet à chaque usager de disposer d’un 
 
 FranceConnect est porté par la direction interministérielle du numérique, ou DINUM, qui accompagne les ministères dans leur transformation numérique, conseille le gouvernement et développe des services et ressources partagées comme ici ce système d’identification et d’authentification en ligne de l’État, ou encore le réseau interministériel de l’État, data.gouv.fr ou api.gouv.fr.
 
-La documentation d'implémentation du service FranceConnect est disponible sur leur [portail partenaires](https://partenaires.franceconnect.gouv.fr/fcp/fournisseur-service)
+La documentation d'implémentation du service FranceConnect est disponible sur le [portail partenaires](https://partenaires.franceconnect.gouv.fr/fcp/fournisseur-service) fourni par la DINUM.
