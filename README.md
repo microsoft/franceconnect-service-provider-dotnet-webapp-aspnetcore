@@ -10,7 +10,7 @@ Celui-ci peut être testé directement à l'adresse <https://aka.ms/FranceConnec
 
 ### Organisation du répertoire.
 Les différents éléments de documentation sont disponibles sous le dossier [/Documentation](/Documentation).
-Les différentes versions du kit sont rapidement accessibles à l'aide des *tags* définis, permettant de retrouver l'état du répértoire pour une version donnée. L'onglet "Releases" sur la droite est utilisable pour consulter aisément celles-ci.
+Les différentes versions publiées du canevas sont rapidement accessibles à l'aide des *tags* définis, permettant de retrouver l'état du répértoire pour une version donnée. L'onglet "Releases" sur la droite est utilisable pour consulter aisément celles-ci.
 Les branches identifient les différent travaux en cours : *main* correspondant à la branche stable, develop à la branche de travail, et toute autre branche represente un ajout indivduel en cours de développement. Ce [schéma](/Documentation/Ressources/Branches.jpg) illustre le flux de travail. Le mode de contribution est également indiqué sous [CONTRIBUTING.md](/CONTRIBUTING.md)
 
 ### FranceConnect 
