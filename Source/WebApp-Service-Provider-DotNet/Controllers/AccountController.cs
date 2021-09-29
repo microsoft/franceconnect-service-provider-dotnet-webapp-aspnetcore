@@ -12,6 +12,7 @@ using WebApp_Service_Provider_DotNet.Models;
 using WebApp_Service_Provider_DotNet.Services;
 using WebApp_Service_Provider_DotNet.ViewModels.Account;
 using Microsoft.AspNetCore.Authentication;
+using System.Globalization;
 
 namespace WebApp_Service_Provider_DotNet.Controllers
 {
@@ -182,12 +183,15 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
+
+                DateTime parsedBirthDate;
+                DateTime.TryParseExact(info.Principal.FindFirstValue("birthdate"), "yyyy-MM-dd", new CultureInfo("fr-FR"), DateTimeStyles.AssumeUniversal, out parsedBirthDate);
                 ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel
                 {
                     Email = info.Principal.FindFirstValue("email"),
                     Gender = info.Principal.FindFirstValue("gender"),
-                    Birthdate = Convert.ToDateTime(info.Principal.FindFirstValue("birthdate")),
-                    PreferredUsername = info.Principal.FindFirstValue("preferred_username"),
+                    Birthdate = parsedBirthDate,
+                    PreferredName = info.Principal.FindFirstValue("preferred_username"),
                     GivenName = info.Principal.FindFirstValue("given_name"),
                     FamilyName = info.Principal.FindFirstValue("family_name")
                 };
@@ -216,7 +220,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                     Email = model.Email,
                     Gender = model.Gender,
                     Birthdate = model.Birthdate,
-                    PreferredUsername = model.PreferredUsername,
+                    PreferredName = model.PreferredName,
                     GivenName = model.GivenName,
                     FamilyName = model.FamilyName
                 };

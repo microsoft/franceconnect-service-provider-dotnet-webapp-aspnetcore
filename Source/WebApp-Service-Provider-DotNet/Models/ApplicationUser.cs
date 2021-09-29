@@ -13,6 +13,6 @@ namespace WebApp_Service_Provider_DotNet.Models
         public DateTimeOffset Birthdate { get; set; }
         public string GivenName { get; set; }
         public string FamilyName { get; set; }
-        public string PreferredUsername { get; set; }
+        public string PreferredName { get; set; }
     }
 }
