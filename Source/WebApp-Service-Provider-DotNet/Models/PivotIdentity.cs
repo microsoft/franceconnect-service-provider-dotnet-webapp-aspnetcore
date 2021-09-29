@@ -7,7 +7,6 @@ namespace WebApp_Service_Provider_DotNet.Models
 {
     public class PivotIdentity
     {
-        public string Openid { get; set; }
         public string Gender { get; set; }
         public DateTimeOffset Birthdate { get; set; }
         public string Birthcountry { get; set; }

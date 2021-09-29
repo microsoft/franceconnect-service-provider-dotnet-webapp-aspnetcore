@@ -238,7 +238,6 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             var claims = info.Principal.Claims;
             var pivotIdentity = new PivotIdentity
             {
-                Openid = GetClaimValue(claims, "openid"),
                 Gender = GetClaimValue(claims, "gender"),
                 Birthdate = Convert.ToDateTime(GetClaimValue(claims, "birthdate")),
                 Birthcountry = GetClaimValue(claims, "birthcountry"),
