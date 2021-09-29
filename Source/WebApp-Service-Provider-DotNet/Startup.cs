@@ -162,6 +162,7 @@ namespace WebApp_Service_Provider_DotNet
                 EndSessionEndpoint = fcConfig.EndSessionEndpoint,
             };
             // We specify claims to be kept, as .NET Core 2.0+ doesn't keep claims it does not expect.
+            oidc_options.ClaimActions.MapUniqueJsonKey("preferred_username", "preferred_username");
             oidc_options.ClaimActions.MapUniqueJsonKey("birthcountry", "birthcountry");
             oidc_options.ClaimActions.MapUniqueJsonKey("birthdate", "birthdate");
             oidc_options.ClaimActions.MapUniqueJsonKey("birthplace", "birthplace");
