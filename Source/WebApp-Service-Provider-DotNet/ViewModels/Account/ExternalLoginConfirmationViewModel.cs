@@ -18,8 +18,10 @@ namespace WebApp_Service_Provider_DotNet.ViewModels.Account
         public string Gender { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [Display(Name = "Date de naissance")]
-        public DateTimeOffset Birthdate { get; set; }
+        public DateTime Birthdate { get; set; }
 
         [Display(Name = "Nom d'usage")]
         public string PreferredUsername { get; set; }
