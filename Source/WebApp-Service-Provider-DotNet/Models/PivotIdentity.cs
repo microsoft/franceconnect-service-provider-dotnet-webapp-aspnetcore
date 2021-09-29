@@ -14,6 +14,7 @@ namespace WebApp_Service_Provider_DotNet.Models
         public string Birthplace { get; set; }
         public string GivenName { get; set; }
         public string FamilyName { get; set; }
+        public string PreferredName { get; set; }
         public string Email { get; set; }
     }
 }

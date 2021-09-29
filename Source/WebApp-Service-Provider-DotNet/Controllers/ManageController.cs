@@ -226,7 +226,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         }
 
         //
-        // GET: /Manage/Claims
+        // GET: /Manage/PivotIdentity
         [HttpGet]
         public async Task<IActionResult> PivotIdentity()
         {
@@ -245,6 +245,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 Birthplace = GetClaimValue(claims, "birthplace"),
                 GivenName = GetClaimValue(claims, "given_name"),
                 FamilyName = GetClaimValue(claims, "family_name"),
+                PreferredName = GetClaimValue(claims, "preferred_username"),
                 Email = GetClaimValue(claims, "email")
             };
             return View(pivotIdentity);
