@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using WebApp_Service_Provider_DotNet.Models;
 using WebApp_Service_Provider_DotNet.Services;
 
@@ -157,10 +158,18 @@ namespace WebApp_Service_Provider_DotNet
             oidc_options.Configuration = new OpenIdConnectConfiguration
             {
                 Issuer = fcConfig.Issuer,
-                AuthorizationEndpoint = fcConfig.AuthorizationEndpoint + "?acr_values=" + fcConfig.EIdas,
+                AuthorizationEndpoint = fcConfig.AuthorizationEndpoint,
                 TokenEndpoint = fcConfig.TokenEndpoint,
                 UserInfoEndpoint = fcConfig.UserInfoEndpoint,
                 EndSessionEndpoint = fcConfig.EndSessionEndpoint,
+            };
+            oidc_options.Events = new OpenIdConnectEvents
+            {
+                OnRedirectToIdentityProvider = (context) =>
+                    {
+                        context.ProtocolMessage.AcrValues = fcConfig.EIdas;
+                        return Task.FromResult(0);
+                    }
             };
             // We specify claims to be kept, as .NET Core 2.0+ doesn't keep claims it does not expect.
             oidc_options.ClaimActions.MapUniqueJsonKey("preferred_username", "preferred_username");
