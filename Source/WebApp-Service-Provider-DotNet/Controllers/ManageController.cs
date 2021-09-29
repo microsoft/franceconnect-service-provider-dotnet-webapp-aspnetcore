@@ -159,8 +159,8 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         public async Task<IActionResult> ManageLogins(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
-                message == ManageMessageId.RemoveLoginSuccess ? "L'authentification externe a été supprimé."
-                : message == ManageMessageId.AddLoginSuccess ? "L'authentification externe a été ajouté."
+                message == ManageMessageId.RemoveLoginSuccess ? "L'authentification externe a été supprimée."
+                : message == ManageMessageId.AddLoginSuccess ? "L'authentification externe a été ajoutée."
                 : message == ManageMessageId.Error ? "Une erreur est survenue."
                 : "";
             var user = await GetCurrentUserAsync();
