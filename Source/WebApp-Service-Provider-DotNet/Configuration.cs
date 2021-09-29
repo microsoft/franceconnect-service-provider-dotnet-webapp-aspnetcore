@@ -24,6 +24,7 @@ namespace WebApp_Service_Provider_DotNet
         public string UserInfoEndpoint { get; set; }
         public string EndSessionEndpoint { get; set; }
         public string EIdas { get; set; }
+        public List<string> Scopes { get; set; }
         public List<DataProvider> DataProviders { get; set; }
     }
     

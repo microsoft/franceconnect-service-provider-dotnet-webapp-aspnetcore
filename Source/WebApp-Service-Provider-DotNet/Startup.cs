@@ -148,9 +148,10 @@ namespace WebApp_Service_Provider_DotNet
             oidc_options.ResponseType = OpenIdConnectResponseType.Code;
             oidc_options.Scope.Clear();
             oidc_options.Scope.Add("openid");
-            oidc_options.Scope.Add("profile");
-            oidc_options.Scope.Add("birth");
-            oidc_options.Scope.Add("email");
+            foreach (string scope in fcConfig.Scopes)
+            {
+                oidc_options.Scope.Add(scope);
+            }
             oidc_options.GetClaimsFromUserInfoEndpoint = true;
             oidc_options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(fcConfig.ClientSecret));
             oidc_options.Configuration = new OpenIdConnectConfiguration
