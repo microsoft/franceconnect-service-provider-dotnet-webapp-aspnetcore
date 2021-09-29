@@ -23,9 +23,6 @@ namespace WebApp_Service_Provider_DotNet.ViewModels.Account
         [Display(Name = "Date de naissance")]
         public DateTime Birthdate { get; set; }
 
-        [Display(Name = "Nom d'usage")]
-        public string PreferredUsername { get; set; }
-        
         [Required]
         [Display(Name = "Prénom")]
         public string GivenName { get; set; }
@@ -33,5 +30,9 @@ namespace WebApp_Service_Provider_DotNet.ViewModels.Account
         [Required]
         [Display(Name = "Nom")]
         public string FamilyName { get; set; }
+
+        [Display(Name = "Nom d'usage")]
+        public string PreferredName { get; set; }
+        
     }
 }

@@ -190,8 +190,8 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 {
                     Email = info.Principal.FindFirstValue("email"),
                     Gender = info.Principal.FindFirstValue("gender"),
-                    PreferredUsername = info.Principal.FindFirstValue("preferred_username"),
                     Birthdate = parsedBirthDate,
+                    PreferredName = info.Principal.FindFirstValue("preferred_username"),
                     GivenName = info.Principal.FindFirstValue("given_name"),
                     FamilyName = info.Principal.FindFirstValue("family_name")
                 };
@@ -220,7 +220,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                     Email = model.Email,
                     Gender = model.Gender,
                     Birthdate = model.Birthdate,
-                    PreferredUsername = model.PreferredUsername,
+                    PreferredName = model.PreferredName,
                     GivenName = model.GivenName,
                     FamilyName = model.FamilyName
                 };
