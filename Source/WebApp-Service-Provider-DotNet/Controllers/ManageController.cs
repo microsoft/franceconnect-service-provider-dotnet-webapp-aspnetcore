@@ -72,7 +72,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 var result = await _userManager.RemoveLoginAsync(user, account.LoginProvider, account.ProviderKey);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.RefreshSignInAsync(user);
                     if (useExternalLogin)
                     {
                         string postLogoutRedirectUri = CreateUri(nameof(ManageLogins));
@@ -111,7 +111,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.RefreshSignInAsync(user);
                     _logger.LogInformation(3, "User changed their password successfully.");
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangePasswordSuccess });
                 }
