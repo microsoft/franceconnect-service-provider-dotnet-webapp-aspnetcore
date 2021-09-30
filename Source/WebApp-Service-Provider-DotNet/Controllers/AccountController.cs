@@ -98,7 +98,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Birthdate = model.Birthdate, Gender = model.Gender, GivenName = model.GivenName, FamilyName = model.FamilyName, PreferredName = model.PreferredName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

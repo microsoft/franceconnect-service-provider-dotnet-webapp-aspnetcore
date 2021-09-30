@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebApp_Service_Provider_DotNet.ViewModels.Account
@@ -22,5 +23,25 @@ namespace WebApp_Service_Provider_DotNet.ViewModels.Account
         [Display(Name = "Confirmer le mot de passe")]
         [Compare("Password", ErrorMessage = "Le mot de passe et le mot de passe de confirmation ne correspondent pas.")]
         public string ConfirmPassword { get; set; }
+
+        [Display(Name = "Sexe")]
+        public string Gender { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
+        [Display(Name = "Date de naissance")]
+        public DateTime? Birthdate { get; set; }
+
+        [Required]
+        [Display(Name = "Prénom")]
+        public string GivenName { get; set; }
+
+        [Required]
+        [Display(Name = "Nom")]
+        public string FamilyName { get; set; }
+
+        [Display(Name = "Nom d'usage")]
+        public string PreferredName { get; set; }
+
     }
 }
