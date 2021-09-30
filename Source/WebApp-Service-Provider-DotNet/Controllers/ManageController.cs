@@ -68,15 +68,15 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                bool useExternalLogin = (await _signInManager.GetExternalLoginInfoAsync()) != null;
+                bool useExternalLogin = User.HasClaim(ClaimTypes.AuthenticationMethod, FranceConnectConfiguration.ProviderScheme);
                 var result = await _userManager.RemoveLoginAsync(user, account.LoginProvider, account.ProviderKey);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.RefreshSignInAsync(user);
                     if (useExternalLogin)
                     {
                         string postLogoutRedirectUri = CreateUri(nameof(ManageLogins));
-                        await HttpContext.SignOutAsync(Scheme.FranceConnect, new AuthenticationProperties { RedirectUri = postLogoutRedirectUri });
+                        await HttpContext.SignOutAsync(FranceConnectConfiguration.ProviderScheme, new AuthenticationProperties { RedirectUri = postLogoutRedirectUri });
                     }
                     else
                     {
@@ -111,7 +111,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await _signInManager.RefreshSignInAsync(user);
                     _logger.LogInformation(3, "User changed their password successfully.");
                     return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangePasswordSuccess });
                 }
@@ -159,8 +159,8 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         public async Task<IActionResult> ManageLogins(ManageMessageId? message = null)
         {
             ViewData["StatusMessage"] =
-                message == ManageMessageId.RemoveLoginSuccess ? "L'authentification externe a été supprimé."
-                : message == ManageMessageId.AddLoginSuccess ? "L'authentification externe a été ajouté."
+                message == ManageMessageId.RemoveLoginSuccess ? "L'authentification externe a été supprimée."
+                : message == ManageMessageId.AddLoginSuccess ? "L'authentification externe a été ajoutée."
                 : message == ManageMessageId.Error ? "Une erreur est survenue."
                 : "";
             var user = await GetCurrentUserAsync();
@@ -173,10 +173,10 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             var availableProviders = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
             return View(new ManageLoginsViewModel
             {
-                IsLinkedToFranceConnect = userLogins.Any(auth => auth.LoginProvider == Scheme.FranceConnect),
+                IsLinkedToFranceConnect = userLogins.Any(auth => auth.LoginProvider == FranceConnectConfiguration.ProviderScheme),
                 CanRemoveExternalLogin = user.PasswordHash != null || userLogins.Count > 1,
-                FranceConnectUserAccount = userLogins.FirstOrDefault(auth => auth.LoginProvider == Scheme.FranceConnect),
-                FranceConnectProvider = availableProviders.FirstOrDefault(auth => auth.Name == Scheme.FranceConnect)
+                FranceConnectUserAccount = userLogins.FirstOrDefault(auth => auth.LoginProvider == FranceConnectConfiguration.ProviderScheme),
+                FranceConnectProvider = availableProviders.FirstOrDefault(auth => auth.Name == FranceConnectConfiguration.ProviderScheme)
             });
         }
 
@@ -211,11 +211,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             ManageMessageId message;
             if (result.Succeeded)
             {
-                //We store the auth tokens as they are needed to logout
-                var props = new AuthenticationProperties();
-                props.StoreTokens(info.AuthenticationTokens);
-                props.IsPersistent = false;
-                await _signInManager.SignInAsync(user, props, info.LoginProvider);
+                await _signInManager.SignInAsync(user, info.AuthenticationProperties, info.LoginProvider);
                 message = ManageMessageId.AddLoginSuccess;
             }
             else

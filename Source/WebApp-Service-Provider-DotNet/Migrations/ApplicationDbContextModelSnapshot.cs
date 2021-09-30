@@ -158,7 +158,7 @@ namespace WebAppServiceProviderDotNet.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("Birthdate")
+                    b.Property<DateTimeOffset?>("Birthdate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ConcurrencyStamp")

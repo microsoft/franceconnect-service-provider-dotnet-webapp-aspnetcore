@@ -98,7 +98,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Birthdate = model.Birthdate, Gender = model.Gender, GivenName = model.GivenName, FamilyName = model.FamilyName, PreferredName = model.PreferredName };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -126,9 +126,9 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            if (await _signInManager.GetExternalLoginInfoAsync() != null)
+            if (User.HasClaim(ClaimTypes.AuthenticationMethod, FranceConnectConfiguration.ProviderScheme))
             {
-                await HttpContext.SignOutAsync(Scheme.FranceConnect);
+                await HttpContext.SignOutAsync(FranceConnectConfiguration.ProviderScheme);
             }
             else
             {
@@ -169,12 +169,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 {
                     return View("Lockout");
                 }
-                //We store the auth tokens as they are needed to logout
-                var props = new AuthenticationProperties();
-                props.StoreTokens(info.AuthenticationTokens);
-                props.IsPersistent = false;
-
-                await _signInManager.SignInAsync(user, props, info.LoginProvider);
+                await _signInManager.SignInAsync(user, info.AuthenticationProperties, info.LoginProvider);
                 _logger.LogInformation(5, "User logged in with {Name} provider.", info.LoginProvider);
                 return RedirectToLocal(returnUrl ?? Url.Action(nameof(ManageController.PivotIdentity), "Manage"));
             }
@@ -182,7 +177,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             {
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
-                ViewData["LoginProvider"] = info.LoginProvider;
+                ViewData["LoginProvider"] = info.ProviderDisplayName;
 
                 DateTime parsedBirthDate;
                 DateTime.TryParseExact(info.Principal.FindFirstValue("birthdate"), "yyyy-MM-dd", new CultureInfo("fr-FR"), DateTimeStyles.AssumeUniversal, out parsedBirthDate);
@@ -230,12 +225,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        //We store the auth tokens as they are needed to logout
-                        var props = new AuthenticationProperties();
-                        props.StoreTokens(info.AuthenticationTokens);
-                        props.IsPersistent = false;
-
-                        await _signInManager.SignInAsync(user, props, info.LoginProvider);
+                        await _signInManager.SignInAsync(user, info.AuthenticationProperties, info.LoginProvider);
                         _logger.LogInformation(6, "User created an account using {Name} provider.", info.LoginProvider);
                         return RedirectToLocal(returnUrl ?? Url.Action(nameof(ManageController.PivotIdentity), "Manage"));
                     }

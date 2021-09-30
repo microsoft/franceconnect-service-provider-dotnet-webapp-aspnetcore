@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using WebApp_Service_Provider_DotNet.Models;
 using WebApp_Service_Provider_DotNet.Services;
 
@@ -45,6 +46,18 @@ namespace WebApp_Service_Provider_DotNet
                 // User-Secrets documentation : https://docs.asp.net/en/latest/security/app-secrets.html
             }
 
+            // Add configuration
+            services.AddOptions();
+
+            // Since updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+            });
+
+            IConfiguration franceConnectConfig = Configuration.GetSection("FranceConnect");
+            services.Configure<FranceConnectConfiguration>(franceConnectConfig);
+
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 {
@@ -63,24 +76,12 @@ namespace WebApp_Service_Provider_DotNet
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Add configuration
-            services.AddOptions();
-
-            IConfiguration franceConnectConfig = Configuration.GetSection("FranceConnect");
-            services.Configure<FranceConnectConfiguration>(franceConnectConfig);
-
             services.AddAuthentication(
                 options =>
                 {
-                    options.DefaultChallengeScheme = Scheme.FranceConnect;
+                    options.DefaultChallengeScheme = FranceConnectConfiguration.ProviderScheme;
                 })
-                .AddOpenIdConnect(Scheme.FranceConnect, Scheme.FranceConnectDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig.Get<FranceConnectConfiguration>()));
-
-            // Since updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.Lax;
-            });
+                .AddOpenIdConnect(FranceConnectConfiguration.ProviderScheme, FranceConnectConfiguration.ProviderDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig.Get<FranceConnectConfiguration>()));
 
             services.AddControllersWithViews();
 
@@ -105,7 +106,7 @@ namespace WebApp_Service_Provider_DotNet
 
             // Disable HTTPS when using the default FC credentials, as these are only configured for http URLs
             app.UseHttpsRedirection();
-            
+
             app.UseRequestLocalization(new RequestLocalizationOptions { DefaultRequestCulture = new RequestCulture("fr-FR") });
 
             app.UseCookiePolicy();
@@ -131,14 +132,14 @@ namespace WebApp_Service_Provider_DotNet
         private void ConfigureFranceConnect(OpenIdConnectOptions oidc_options, FranceConnectConfiguration fcConfig)
         {
 
-            //FC refuses unknown parameters in the requests, so the two following options are needed 
-            oidc_options.DisableTelemetry = true; //This is false by default on .NET Core 3.1, and sends additional parameters such as "x-client-ver" in the requests to FC.
-            oidc_options.UsePkce = false; //This is true by default on .NET Core 3.1, and enables the PKCE mechanism which sends additional parameters such as "code_challenge" in the requests to FC.
+            // FC refuses unknown parameters in the requests, so the two following options are needed 
+            oidc_options.DisableTelemetry = true; // This is false by default on .NET Core 3.1, and sends additional parameters such as "x-client-ver" in the requests to FC.
+            oidc_options.UsePkce = false; // This is true by default on .NET Core 3.1, and enables the PKCE mechanism which is not supported by FC.
 
-            //FC errors out (in the logout flow, with a E000031 undocumented error) when parsing an id token with a dot in the nonce. We use this option so that the nonce does not contain a dot.
-            oidc_options.ProtocolValidator.RequireTimeStampInNonce = false;//https://docs.microsoft.com/en-us/dotnet/api/microsoft.identitymodel.protocols.openidconnect.openidconnectprotocolvalidator.requiretimestampinnonce
+            // FC has restrictions in the nonce (max 128 alphanumeric characters) and errors out in the logout flow otherwise. We use this option so that the nonce does not contain a dot.
+            oidc_options.ProtocolValidator.RequireTimeStampInNonce = false;
 
-            oidc_options.SaveTokens = true;//This is needed to keep the id_token obtained for authentication : we have to send it back to FC to logout.
+            oidc_options.SaveTokens = true; // This is needed to keep the id_token obtained for authentication : we have to send it back to FC to logout.
 
             oidc_options.ClientId = fcConfig.ClientId;
             oidc_options.ClientSecret = fcConfig.ClientSecret;
@@ -148,18 +149,27 @@ namespace WebApp_Service_Provider_DotNet
             oidc_options.ResponseType = OpenIdConnectResponseType.Code;
             oidc_options.Scope.Clear();
             oidc_options.Scope.Add("openid");
-            oidc_options.Scope.Add("profile");
-            oidc_options.Scope.Add("birth");
-            oidc_options.Scope.Add("email");
+            foreach (string scope in fcConfig.Scopes)
+            {
+                oidc_options.Scope.Add(scope);
+            }
             oidc_options.GetClaimsFromUserInfoEndpoint = true;
             oidc_options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(fcConfig.ClientSecret));
             oidc_options.Configuration = new OpenIdConnectConfiguration
             {
                 Issuer = fcConfig.Issuer,
-                AuthorizationEndpoint = fcConfig.AuthorizationEndpoint + "?acr_values=" + fcConfig.EIdas,
+                AuthorizationEndpoint = fcConfig.AuthorizationEndpoint,
                 TokenEndpoint = fcConfig.TokenEndpoint,
                 UserInfoEndpoint = fcConfig.UserInfoEndpoint,
                 EndSessionEndpoint = fcConfig.EndSessionEndpoint,
+            };
+            oidc_options.Events = new OpenIdConnectEvents
+            {
+                OnRedirectToIdentityProvider = (context) =>
+                    {
+                        context.ProtocolMessage.AcrValues = fcConfig.EIdas;
+                        return Task.FromResult(0);
+                    }
             };
             // We specify claims to be kept, as .NET Core 2.0+ doesn't keep claims it does not expect.
             oidc_options.ClaimActions.MapUniqueJsonKey("preferred_username", "preferred_username");

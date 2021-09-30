@@ -41,7 +41,7 @@ namespace WebAppServiceProviderDotNet.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Gender = table.Column<string>(nullable: true),
-                    Birthdate = table.Column<DateTimeOffset>(nullable: false),
+                    Birthdate = table.Column<DateTimeOffset>(nullable: true),
                     GivenName = table.Column<string>(nullable: true),
                     FamilyName = table.Column<string>(nullable: true),
                     PreferredName = table.Column<string>(nullable: true)
