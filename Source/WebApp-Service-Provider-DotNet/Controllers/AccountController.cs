@@ -126,7 +126,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            if (await _signInManager.GetExternalLoginInfoAsync() != null)
+            if (User.HasClaim(ClaimTypes.AuthenticationMethod, Scheme.FranceConnect))
             {
                 await HttpContext.SignOutAsync(Scheme.FranceConnect);
             }

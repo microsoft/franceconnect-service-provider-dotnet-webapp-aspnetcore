@@ -68,7 +68,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             var user = await GetCurrentUserAsync();
             if (user != null)
             {
-                bool useExternalLogin = (await _signInManager.GetExternalLoginInfoAsync()) != null;
+                bool useExternalLogin = User.HasClaim(ClaimTypes.AuthenticationMethod, FranceConnectConfiguration.ProviderScheme);
                 var result = await _userManager.RemoveLoginAsync(user, account.LoginProvider, account.ProviderKey);
                 if (result.Succeeded)
                 {

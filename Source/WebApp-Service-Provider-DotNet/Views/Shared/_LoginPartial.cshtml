@@ -1,4 +1,5 @@
-﻿@inject SignInManager<ApplicationUser> SignInManager
+﻿@using System.Security.Claims
+@inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
 <ul class="navbar-nav">
@@ -7,7 +8,7 @@
     <li class="nav-item">
         <a class="nav-link text-dark" asp-controller="Data" asp-action="Index">Données</a>
     </li>
-        @if (await SignInManager.GetExternalLoginInfoAsync() != null)
+        @if (User.HasClaim(ClaimTypes.AuthenticationMethod, Scheme.FranceConnect))
         {
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Manage" asp-action="Index">Mon compte</a>
