@@ -46,6 +46,18 @@ namespace WebApp_Service_Provider_DotNet
                 // User-Secrets documentation : https://docs.asp.net/en/latest/security/app-secrets.html
             }
 
+            // Add configuration
+            services.AddOptions();
+
+            // Since updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+            });
+
+            IConfiguration franceConnectConfig = Configuration.GetSection("FranceConnect");
+            services.Configure<FranceConnectConfiguration>(franceConnectConfig);
+
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 {
@@ -64,24 +76,12 @@ namespace WebApp_Service_Provider_DotNet
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Add configuration
-            services.AddOptions();
-
-            IConfiguration franceConnectConfig = Configuration.GetSection("FranceConnect");
-            services.Configure<FranceConnectConfiguration>(franceConnectConfig);
-
             services.AddAuthentication(
                 options =>
                 {
                     options.DefaultChallengeScheme = Scheme.FranceConnect;
                 })
                 .AddOpenIdConnect(Scheme.FranceConnect, Scheme.FranceConnectDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig.Get<FranceConnectConfiguration>()));
-
-            // Since updates to SameSite cookie policies, this must be used for the authentication cookies to avoid a Correlation error without HTTPS
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.MinimumSameSitePolicy = SameSiteMode.Lax;
-            });
 
             services.AddControllersWithViews();
 
