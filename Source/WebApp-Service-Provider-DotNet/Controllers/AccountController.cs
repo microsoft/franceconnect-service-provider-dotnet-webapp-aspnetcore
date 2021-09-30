@@ -177,7 +177,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             {
                 // If the user does not have an account, then ask the user to create an account.
                 ViewData["ReturnUrl"] = returnUrl;
-                ViewData["LoginProvider"] = info.LoginProvider;
+                ViewData["LoginProvider"] = info.ProviderDisplayName;
 
                 DateTime parsedBirthDate;
                 DateTime.TryParseExact(info.Principal.FindFirstValue("birthdate"), "yyyy-MM-dd", new CultureInfo("fr-FR"), DateTimeStyles.AssumeUniversal, out parsedBirthDate);
