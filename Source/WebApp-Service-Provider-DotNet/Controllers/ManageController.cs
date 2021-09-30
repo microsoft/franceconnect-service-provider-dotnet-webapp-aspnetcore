@@ -211,11 +211,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             ManageMessageId message;
             if (result.Succeeded)
             {
-                //We store the auth tokens as they are needed to logout
-                var props = new AuthenticationProperties();
-                props.StoreTokens(info.AuthenticationTokens);
-                props.IsPersistent = false;
-                await _signInManager.SignInAsync(user, props, info.LoginProvider);
+                await _signInManager.SignInAsync(user, info.AuthenticationProperties, info.LoginProvider);
                 message = ManageMessageId.AddLoginSuccess;
             }
             else

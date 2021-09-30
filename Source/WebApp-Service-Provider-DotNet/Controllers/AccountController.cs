@@ -169,12 +169,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 {
                     return View("Lockout");
                 }
-                //We store the auth tokens as they are needed to logout
-                var props = new AuthenticationProperties();
-                props.StoreTokens(info.AuthenticationTokens);
-                props.IsPersistent = false;
-
-                await _signInManager.SignInAsync(user, props, info.LoginProvider);
+                await _signInManager.SignInAsync(user, info.AuthenticationProperties, info.LoginProvider);
                 _logger.LogInformation(5, "User logged in with {Name} provider.", info.LoginProvider);
                 return RedirectToLocal(returnUrl ?? Url.Action(nameof(ManageController.PivotIdentity), "Manage"));
             }
@@ -230,12 +225,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        //We store the auth tokens as they are needed to logout
-                        var props = new AuthenticationProperties();
-                        props.StoreTokens(info.AuthenticationTokens);
-                        props.IsPersistent = false;
-
-                        await _signInManager.SignInAsync(user, props, info.LoginProvider);
+                        await _signInManager.SignInAsync(user, info.AuthenticationProperties, info.LoginProvider);
                         _logger.LogInformation(6, "User created an account using {Name} provider.", info.LoginProvider);
                         return RedirectToLocal(returnUrl ?? Url.Action(nameof(ManageController.PivotIdentity), "Manage"));
                     }
