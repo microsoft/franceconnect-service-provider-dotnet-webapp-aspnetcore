@@ -76,7 +76,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                     if (useExternalLogin)
                     {
                         string postLogoutRedirectUri = CreateUri(nameof(ManageLogins));
-                        await HttpContext.SignOutAsync(Scheme.FranceConnect, new AuthenticationProperties { RedirectUri = postLogoutRedirectUri });
+                        await HttpContext.SignOutAsync(FranceConnectConfiguration.ProviderScheme, new AuthenticationProperties { RedirectUri = postLogoutRedirectUri });
                     }
                     else
                     {
@@ -173,10 +173,10 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             var availableProviders = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
             return View(new ManageLoginsViewModel
             {
-                IsLinkedToFranceConnect = userLogins.Any(auth => auth.LoginProvider == Scheme.FranceConnect),
+                IsLinkedToFranceConnect = userLogins.Any(auth => auth.LoginProvider == FranceConnectConfiguration.ProviderScheme),
                 CanRemoveExternalLogin = user.PasswordHash != null || userLogins.Count > 1,
-                FranceConnectUserAccount = userLogins.FirstOrDefault(auth => auth.LoginProvider == Scheme.FranceConnect),
-                FranceConnectProvider = availableProviders.FirstOrDefault(auth => auth.Name == Scheme.FranceConnect)
+                FranceConnectUserAccount = userLogins.FirstOrDefault(auth => auth.LoginProvider == FranceConnectConfiguration.ProviderScheme),
+                FranceConnectProvider = availableProviders.FirstOrDefault(auth => auth.Name == FranceConnectConfiguration.ProviderScheme)
             });
         }
 

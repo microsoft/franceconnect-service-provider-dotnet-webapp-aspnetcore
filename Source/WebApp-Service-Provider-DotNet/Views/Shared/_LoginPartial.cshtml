@@ -8,7 +8,7 @@
     <li class="nav-item">
         <a class="nav-link text-dark" asp-controller="Data" asp-action="Index">Données</a>
     </li>
-        @if (User.HasClaim(ClaimTypes.AuthenticationMethod, Scheme.FranceConnect))
+        @if (User.HasClaim(ClaimTypes.AuthenticationMethod, FranceConnectConfiguration.ProviderScheme))
         {
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Manage" asp-action="Index">Mon compte</a>

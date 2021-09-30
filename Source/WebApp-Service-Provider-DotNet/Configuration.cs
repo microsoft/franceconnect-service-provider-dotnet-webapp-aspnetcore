@@ -5,14 +5,10 @@ using System.Collections.Generic;
 
 namespace WebApp_Service_Provider_DotNet
 {
-    public class Scheme
-    {
-        public const string FranceConnectDisplayName = "FranceConnect";
-        public const string FranceConnect = "oidc_FranceConnect";
-    }
-
     public class FranceConnectConfiguration
     {
+        public const string ProviderScheme = "oidc_FranceConnect";
+        public const string ProviderDisplayName= "FranceConnect";
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
         public string CallbackPath { get; set; }

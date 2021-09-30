@@ -79,9 +79,9 @@ namespace WebApp_Service_Provider_DotNet
             services.AddAuthentication(
                 options =>
                 {
-                    options.DefaultChallengeScheme = Scheme.FranceConnect;
+                    options.DefaultChallengeScheme = FranceConnectConfiguration.ProviderScheme;
                 })
-                .AddOpenIdConnect(Scheme.FranceConnect, Scheme.FranceConnectDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig.Get<FranceConnectConfiguration>()));
+                .AddOpenIdConnect(FranceConnectConfiguration.ProviderScheme, FranceConnectConfiguration.ProviderDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig.Get<FranceConnectConfiguration>()));
 
             services.AddControllersWithViews();
 

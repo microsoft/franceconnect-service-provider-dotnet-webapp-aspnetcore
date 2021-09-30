@@ -37,7 +37,7 @@
             <h4>S'authentifier avec FranceConnect.</h4>
             <hr />
             @{
-                var franceConnectProvider = (await SignInManager.GetExternalAuthenticationSchemesAsync()).FirstOrDefault(auth => auth.Name == Scheme.FranceConnect);
+                var franceConnectProvider = (await SignInManager.GetExternalAuthenticationSchemesAsync()).FirstOrDefault(auth => auth.Name == FranceConnectConfiguration.ProviderScheme);
                 <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
                     <button type="submit" class="btn-fc" name="provider" value="@franceConnectProvider.Name" title="Connectez vous avec votre compte @franceConnectProvider.DisplayName"></button>
                 </form>
