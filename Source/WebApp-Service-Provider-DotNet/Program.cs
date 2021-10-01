@@ -134,7 +134,6 @@ if (app.Environment.IsProduction())
 }
 else
 {
-    app.UseBrowserLink();
     app.UseMigrationsEndPoint();
 }
 
