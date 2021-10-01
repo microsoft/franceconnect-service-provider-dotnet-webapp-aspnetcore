@@ -8,15 +8,17 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 using WebApp_Service_Provider_DotNet.Helpers;
+using WebApp_Service_Provider_DotNet.Models;
 
 namespace WebApp_Service_Provider_DotNet.Services
 {
-    class FCSignInManager<TUser> : SignInManager<TUser> where TUser : class
+    class FCSignInManager : SignInManager<ApplicationUser>
     {
-        public FCSignInManager(UserManager<TUser> userManager, IHttpContextAccessor contextAccessor, IUserClaimsPrincipalFactory<TUser> claimsFactory, IOptions<IdentityOptions> optionsAccessor, ILogger<SignInManager<TUser>> logger, IAuthenticationSchemeProvider schemes, IUserConfirmation<TUser> confirmation)
+        public FCSignInManager(UserManager<ApplicationUser> userManager, IHttpContextAccessor contextAccessor, IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory, IOptions<IdentityOptions> optionsAccessor, ILogger<SignInManager<ApplicationUser>> logger, IAuthenticationSchemeProvider schemes, IUserConfirmation<ApplicationUser> confirmation) 
             : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes, confirmation)
         {
         }
+
         public override async Task<ExternalLoginInfo> GetExternalLoginInfoAsync(string expectedXsrf = null)
         {
             ExternalLoginInfo info = await base.GetExternalLoginInfoAsync(expectedXsrf);
