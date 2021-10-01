@@ -14,11 +14,14 @@ using Microsoft.Extensions.Options;
 using System.Text.Json;
 using WebApp_Service_Provider_DotNet.ViewModels.Data;
 using System.Net.Http;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Headers;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Http;
 using System.Text;
+using WebApp_Service_Provider_DotNet.Helpers;
 
 namespace WebApp_Service_Provider_DotNet.Controllers
 {
@@ -118,13 +121,18 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 Method = HttpMethod.Post,
                 Code = code,
                 RedirectUri = GetConsentRedirectUri()
-            }
-                );
-            if (tokenResponse.IsError || string.IsNullOrEmpty(tokenResponse.AccessToken))
+            });
+            if (tokenResponse.IsError || string.IsNullOrEmpty(tokenResponse.AccessToken) || string.IsNullOrEmpty(tokenResponse.IdentityToken))
             {
                 throw new Exception("Unable to retrieve access token");
             }
 
+            JwtSecurityToken IdToken = Validation.ReadAndValidateToken(tokenResponse.IdentityToken, new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.ClientSecret)));
+
+            if (IdToken == null)
+            {
+                throw new Exception("Invalid IdToken");
+            }
             consentCookie.State = null;
             consentCookie.Token = tokenResponse.AccessToken;
             json = JsonSerializer.Serialize(consentCookie);
