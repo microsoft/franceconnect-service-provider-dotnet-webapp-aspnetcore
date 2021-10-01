@@ -8,7 +8,7 @@ namespace WebApp_Service_Provider_DotNet
     public class FranceConnectConfiguration
     {
         public const string ProviderScheme = "oidc_FranceConnect";
-        public const string ProviderDisplayName= "FranceConnect";
+        public const string ProviderDisplayName = "FranceConnect";
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
         public string CallbackPath { get; set; }
@@ -30,7 +30,7 @@ namespace WebApp_Service_Provider_DotNet
         public List<string> Scopes { get; set; }
         public List<DataProvider> DataProviders { get; set; }
     }
-    
+
     public class DataProvider
     {
         public string Name { get; set; }

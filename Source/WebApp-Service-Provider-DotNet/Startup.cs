@@ -76,7 +76,7 @@ namespace WebApp_Service_Provider_DotNet
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders()
                 .AddSignInManager<FCSignInManager<ApplicationUser>>();
-            
+
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 
             services.AddAuthentication(

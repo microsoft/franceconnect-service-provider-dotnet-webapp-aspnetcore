@@ -1,27 +1,27 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using IdentityModel.Client;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using WebApp_Service_Provider_DotNet.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Text.Json;
-using WebApp_Service_Provider_DotNet.ViewModels.Data;
-using System.Net.Http;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
-using IdentityModel.Client;
-using Microsoft.AspNetCore.Http;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using WebApp_Service_Provider_DotNet.Helpers;
+using WebApp_Service_Provider_DotNet.Models;
+using WebApp_Service_Provider_DotNet.ViewModels.Data;
 
 namespace WebApp_Service_Provider_DotNet.Controllers
 {
