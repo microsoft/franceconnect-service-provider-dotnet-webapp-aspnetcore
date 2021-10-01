@@ -11,6 +11,25 @@ namespace WebApp_Service_Provider_DotNet.Helpers
     public static class Validation
     {
         /// <summary>
+        /// Parse an acr_values string and checks if it containsan eidas claim above the required one
+        /// </summary>
+        public static bool IsEIdasLevelMet(string acrValues, int minimumEIdasLevel)
+        {
+            if (acrValues != null)
+            {
+                Regex myRegex = new Regex(@"eidas(\d)");
+                Match match = myRegex.Match(acrValues);
+                if (match.Success)
+                {
+                    int eIdasLevel = int.Parse(match.Groups[1].Value);
+                    if (eIdasLevel >= minimumEIdasLevel)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+        /// <summary>
         /// Validate the token signature and reads it if valid
         /// </summary>
         /// <param name="token">the JWT to read</param>

@@ -133,6 +133,12 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             {
                 throw new Exception("Invalid IdToken");
             }
+
+            if (!Validation.IsEIdasLevelMet(IdToken.Payload.Acr, _config.EIdasLevel))
+            {
+                throw new Exception("EIdasLevel not met");
+            }
+
             UserLoginInfo FCUserAccount = await GetUserFCAccount();
             if (FCUserAccount != null & FCUserAccount.ProviderKey != Hashing.HashString(IdToken.Payload.Sub))
             {

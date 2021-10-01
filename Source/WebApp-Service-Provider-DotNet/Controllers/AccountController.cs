@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using WebApp_Service_Provider_DotNet.Helpers;
 using WebApp_Service_Provider_DotNet.Models;
 using WebApp_Service_Provider_DotNet.Services;
 using WebApp_Service_Provider_DotNet.ViewModels.Account;
@@ -23,16 +25,19 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
+        private readonly FranceConnectConfiguration _config;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
+            IOptions<FranceConnectConfiguration> config,
             ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _config = config.Value;
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
@@ -160,7 +165,13 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             {
                 return RedirectToAction(nameof(Login));
             }
-
+            // acr_values are mapped to this authnclassreference claim by .NET
+            string acrValues = info.Principal?.FindFirst("http://schemas.microsoft.com/claims/authnclassreference")?.Value;
+            if (!Validation.IsEIdasLevelMet(acrValues, _config.EIdasLevel))
+            {
+                await HttpContext.SignOutAsync(FranceConnectConfiguration.ProviderScheme, new AuthenticationProperties { RedirectUri = Url.Action(nameof(Login), null, null, Request.Scheme) });
+                throw new UnauthorizedAccessException("Requested EIdas level not met");
+            }
             // Sign in the user with this external login provider if the user already has a login.
             var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
             if (user != null)
