@@ -133,12 +133,26 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             {
                 throw new Exception("Invalid IdToken");
             }
+            UserLoginInfo FCUserAccount = await GetUserFCAccount();
+            if (FCUserAccount != null & FCUserAccount.ProviderKey != Hashing.HashString(IdToken.Payload.Sub))
+            {
+                throw new Exception("Unexpected sub");
+            }
+
             consentCookie.State = null;
             consentCookie.Token = tokenResponse.AccessToken;
             json = JsonSerializer.Serialize(consentCookie);
             Response.Cookies.Append("consent", Base64Encode(json), new CookieOptions { Expires = DateTimeOffset.Now.AddMinutes(15) });
 
             return RedirectToAction(nameof(Resource));
+        }
+
+        private async Task<UserLoginInfo> GetUserFCAccount()
+        {
+            ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
+            IList<UserLoginInfo> userLogins = await _userManager.GetLoginsAsync(user);
+            UserLoginInfo FCUserAccount = userLogins.FirstOrDefault(auth => auth.LoginProvider == FranceConnectConfiguration.ProviderScheme);
+            return FCUserAccount;
         }
 
         //
