@@ -21,7 +21,7 @@ namespace WebApp_Service_Provider_DotNet.ViewModels.Account
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [Display(Name = "Date de naissance")]
-        public DateTime Birthdate { get; set; }
+        public DateTime? Birthdate { get; set; }
 
         [Required]
         [Display(Name = "Prénom")]
