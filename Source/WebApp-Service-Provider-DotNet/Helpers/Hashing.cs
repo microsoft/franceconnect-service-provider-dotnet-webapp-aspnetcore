@@ -10,7 +10,7 @@ namespace WebApp_Service_Provider_DotNet.Helpers
     {
         public static string HashString(string stringToHash)
         {
-            using (SHA512 sha512 = new SHA512Managed())
+            using (SHA512 sha512 = SHA512.Create())
             {
                 var hash = sha512.ComputeHash(Encoding.UTF8.GetBytes(stringToHash));
                 
