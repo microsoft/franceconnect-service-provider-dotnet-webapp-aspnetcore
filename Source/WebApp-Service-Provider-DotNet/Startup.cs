@@ -170,7 +170,7 @@ namespace WebApp_Service_Provider_DotNet
             {
                 OnRedirectToIdentityProvider = (context) =>
                     {
-                        context.ProtocolMessage.AcrValues = fcConfig.EIdas;
+                        context.ProtocolMessage.AcrValues = "eidas" + fcConfig.EIdasLevel;
                         return Task.FromResult(0);
                     }
             };
