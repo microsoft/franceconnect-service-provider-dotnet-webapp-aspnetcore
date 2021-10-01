@@ -14,14 +14,14 @@
             <a class="nav-link text-dark" asp-controller="Manage" asp-action="Index">Mon compte</a>
         </li>
         <li class="nav-item" id="fconnect-profile" data-fc-logout-url="@Url.Action("LogOff", "Account" )">
-            <a class="nav-link text-dark" href="#">@UserManager.GetUserName(User)</a>
+            <a class="nav-link text-dark" href="#">@User.FindFirstValue("GivenName") @User.FindFirstValue("PreferredName")</a>
         </li>
         }
         else
         {
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Manage" asp-action="Index" title="Mon compte">Bonjour
-                @UserManager.GetUserName(User) !</a>
+                @User.FindFirstValue("GivenName") @User.FindFirstValue("PreferredName") !</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Account" asp-action="LogOff">Se déconnecter</a>

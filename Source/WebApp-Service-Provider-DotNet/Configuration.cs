@@ -8,7 +8,7 @@ namespace WebApp_Service_Provider_DotNet
     public class FranceConnectConfiguration
     {
         public const string ProviderScheme = "oidc_FranceConnect";
-        public const string ProviderDisplayName= "FranceConnect";
+        public const string ProviderDisplayName = "FranceConnect";
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
         public string CallbackPath { get; set; }
@@ -19,11 +19,18 @@ namespace WebApp_Service_Provider_DotNet
         public string TokenEndpoint { get; set; }
         public string UserInfoEndpoint { get; set; }
         public string EndSessionEndpoint { get; set; }
-        public string EIdas { get; set; }
+        private int _EIdasLevel;
+        public int EIdasLevel
+        {
+            get => _EIdasLevel;
+
+            //Valid if between 1 & 3, invalid (set to 1 instead) otherwise
+            set => _EIdasLevel = value > 0 && value < 4 ? value : 1;
+        }
         public List<string> Scopes { get; set; }
         public List<DataProvider> DataProviders { get; set; }
     }
-    
+
     public class DataProvider
     {
         public string Name { get; set; }

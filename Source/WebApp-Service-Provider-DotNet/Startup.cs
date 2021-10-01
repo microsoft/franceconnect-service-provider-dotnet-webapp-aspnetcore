@@ -74,7 +74,10 @@ namespace WebApp_Service_Provider_DotNet
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddSignInManager<FCSignInManager<ApplicationUser>>();
+
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 
             services.AddAuthentication(
                 options =>
@@ -167,7 +170,7 @@ namespace WebApp_Service_Provider_DotNet
             {
                 OnRedirectToIdentityProvider = (context) =>
                     {
-                        context.ProtocolMessage.AcrValues = fcConfig.EIdas;
+                        context.ProtocolMessage.AcrValues = "eidas" + fcConfig.EIdasLevel;
                         return Task.FromResult(0);
                     }
             };

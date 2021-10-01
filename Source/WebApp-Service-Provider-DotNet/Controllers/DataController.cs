@@ -1,24 +1,27 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using IdentityModel.Client;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using WebApp_Service_Provider_DotNet.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Text.Json;
-using WebApp_Service_Provider_DotNet.ViewModels.Data;
-using System.Net.Http;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
-using IdentityModel.Client;
-using Microsoft.AspNetCore.Http;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using WebApp_Service_Provider_DotNet.Helpers;
+using WebApp_Service_Provider_DotNet.Models;
+using WebApp_Service_Provider_DotNet.ViewModels.Data;
 
 namespace WebApp_Service_Provider_DotNet.Controllers
 {
@@ -56,7 +59,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         public IActionResult GetResource(string provider)
         {
             var state = Guid.NewGuid().ToString("N");
-            var scope = new List<string> { "openid", "email" };
+            var scope = new List<string> { "openid" };
             scope.AddRange(_config.DataProviders.FirstOrDefault(dp => dp.Name == provider).Scopes);
 
             var json = JsonSerializer.Serialize(new ConsentCookie
@@ -74,7 +77,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 scope: string.Join(" ", scope),
                 redirectUri: GetConsentRedirectUri(),
                 state: state,
-                acrValues: _config.EIdas,
+                acrValues: "eidas" + _config.EIdasLevel,
                 nonce: Guid.NewGuid().ToString("N")));
         }
 
@@ -118,11 +121,28 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 Method = HttpMethod.Post,
                 Code = code,
                 RedirectUri = GetConsentRedirectUri()
-            }
-                );
-            if (tokenResponse.IsError || string.IsNullOrEmpty(tokenResponse.AccessToken))
+            });
+            if (tokenResponse.IsError || string.IsNullOrEmpty(tokenResponse.AccessToken) || string.IsNullOrEmpty(tokenResponse.IdentityToken))
             {
                 throw new Exception("Unable to retrieve access token");
+            }
+
+            JwtSecurityToken IdToken = Validation.ReadAndValidateToken(tokenResponse.IdentityToken, new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.ClientSecret)));
+
+            if (IdToken == null)
+            {
+                throw new Exception("Invalid IdToken");
+            }
+
+            if (!Validation.IsEIdasLevelMet(IdToken.Payload.Acr, _config.EIdasLevel))
+            {
+                throw new Exception("EIdasLevel not met");
+            }
+
+            UserLoginInfo FCUserAccount = await GetUserFCAccount();
+            if (FCUserAccount != null & FCUserAccount.ProviderKey != Hashing.HashString(IdToken.Payload.Sub))
+            {
+                throw new Exception("Unexpected sub");
             }
 
             consentCookie.State = null;
@@ -131,6 +151,14 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             Response.Cookies.Append("consent", Base64Encode(json), new CookieOptions { Expires = DateTimeOffset.Now.AddMinutes(15) });
 
             return RedirectToAction(nameof(Resource));
+        }
+
+        private async Task<UserLoginInfo> GetUserFCAccount()
+        {
+            ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
+            IList<UserLoginInfo> userLogins = await _userManager.GetLoginsAsync(user);
+            UserLoginInfo FCUserAccount = userLogins.FirstOrDefault(auth => auth.LoginProvider == FranceConnectConfiguration.ProviderScheme);
+            return FCUserAccount;
         }
 
         //
