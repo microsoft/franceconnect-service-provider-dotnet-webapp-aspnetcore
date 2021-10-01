@@ -59,7 +59,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         public IActionResult GetResource(string provider)
         {
             var state = Guid.NewGuid().ToString("N");
-            var scope = new List<string> { "openid", "email" };
+            var scope = new List<string> { "openid" };
             scope.AddRange(_config.DataProviders.FirstOrDefault(dp => dp.Name == provider).Scopes);
 
             var json = JsonSerializer.Serialize(new ConsentCookie
