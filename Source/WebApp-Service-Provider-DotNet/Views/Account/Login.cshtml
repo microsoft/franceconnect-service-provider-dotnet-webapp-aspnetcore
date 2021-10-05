@@ -9,10 +9,10 @@
 
 <h2>@ViewData["Title"].</h2>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <section>
             <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-                <h4>Utiliser un compte local pour s'authentifier.</h4>
+                <h4>S'authentifier avec un compte local</h4>
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
@@ -43,16 +43,24 @@
             </form>
         </section>
     </div>
-    <div class="col-md-6 col-md-offest-2">
+    
+    <div class="col-md-1">
+        <p class="text-center"><b> - ou - </b></p>
+    </div>
+
+    <div class="col-md-5 col-md-offset-2">
         <section>
-            <h4>S'authentifier avec FranceConnect.</h4>
+            <h4>S'authentifier avec FranceConnect</h4>
             <hr />
+            <div class="text-center">
             @{
                 var franceConnectProvider = (await SignInManager.GetExternalAuthenticationSchemesAsync()).FirstOrDefault(auth => auth.Name == FranceConnectConfiguration.ProviderScheme);
                 <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-                    <button type="submit" class="btn-fc" name="provider" value="@franceConnectProvider.Name" title="Connectez vous avec votre compte @franceConnectProvider.DisplayName"></button>
+                    <button type="submit" class="btn-fc" name="provider" value="@franceConnectProvider.Name" title="Connectez vous avec votre compte @franceConnectProvider.DisplayName"></button>                
                 </form>
+                <a href="https://franceconnect.gouv.fr/">Qu'est-ce que FranceConnect ?</a>
             }
+            </div>
         </section>
     </div>
 </div>
