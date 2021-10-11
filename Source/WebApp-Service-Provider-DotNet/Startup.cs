@@ -92,7 +92,7 @@ namespace WebApp_Service_Provider_DotNet
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, ApplicationDbContext dbContext, IOptions<FranceConnectConfiguration> franceConnectConfig)
+        public void Configure(IApplicationBuilder app, IOptions<FranceConnectConfiguration> franceConnectConfig)
         {
             if (Env.IsProduction())
             {
