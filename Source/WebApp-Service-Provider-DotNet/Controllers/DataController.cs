@@ -101,15 +101,15 @@ namespace WebApp_Service_Provider_DotNet.Controllers
 
             if (string.IsNullOrEmpty(code))
             {
-                throw new ArgumentNullException("Authorization code cannot be null");
+                throw new ArgumentNullException(code,"Authorization code cannot be null");
             }
             if (string.IsNullOrEmpty(state))
             {
-                throw new ArgumentNullException("State cannot be null");
+                throw new ArgumentNullException(state,"State cannot be null");
             }
             if (state != consentCookie.State)
             {
-                throw new ArgumentException("Invalid state");
+                throw new ArgumentException("Invalid state", state);
             }
 
             var tokenClient = new HttpClient();
