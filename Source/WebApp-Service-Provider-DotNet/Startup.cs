@@ -78,11 +78,7 @@ namespace WebApp_Service_Provider_DotNet
                 .AddSignInManager<FCSignInManager>()
                 .AddClaimsPrincipalFactory<ApplicationUserClaimsPrincipalFactory>();
 
-            services.AddAuthentication(
-                options =>
-                {
-                    options.DefaultChallengeScheme = FranceConnectConfiguration.ProviderScheme;
-                })
+            services.AddAuthentication()
                 .AddOpenIdConnect(FranceConnectConfiguration.ProviderScheme, FranceConnectConfiguration.ProviderDisplayName, options => ConfigureFranceConnect(options, franceConnectConfig.Get<FranceConnectConfiguration>()));
 
             services.AddControllersWithViews();
