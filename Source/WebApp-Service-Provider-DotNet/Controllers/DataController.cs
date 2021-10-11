@@ -228,7 +228,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
 
         #region Helpers
 
-        private BaseResourceViewModel ConvertResource(string json, string scheme)
+        private static BaseResourceViewModel ConvertResource(string json, string scheme)
         {
             return scheme switch
             {
@@ -258,13 +258,13 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 : Request.Scheme + "://" + Request.Host + Url.Action(nameof(GetResourceCallback));
         }
 
-        private string Base64Encode(string text)
+        private static string Base64Encode(string text)
         {
             var bytes = Encoding.UTF8.GetBytes(text);
             return Convert.ToBase64String(bytes);
         }
 
-        private string Base64Decode(string base64EncodedText)
+        private static string Base64Decode(string base64EncodedText)
         {
             var bytes = Convert.FromBase64String(base64EncodedText);
             return Encoding.UTF8.GetString(bytes);

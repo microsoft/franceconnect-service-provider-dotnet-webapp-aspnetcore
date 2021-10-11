@@ -276,7 +276,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             return string.Format("{0}://{1}{2}", protocol, Request.Host, Url.Action(action));
         }
 
-        private string GetClaimValue(IEnumerable<Claim> claims, string claimType)
+        private static string GetClaimValue(IEnumerable<Claim> claims, string claimType)
         {
             var claim = claims.FirstOrDefault(c => c.Type == claimType);
             if (claim != null)
