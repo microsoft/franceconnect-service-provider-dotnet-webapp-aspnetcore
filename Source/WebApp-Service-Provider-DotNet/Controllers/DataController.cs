@@ -166,7 +166,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
         [HttpGet]
         public async Task<IActionResult> Resource()
         {
-            ConsentCookie consentCookie = null;
+            ConsentCookie consentCookie;
             try
             {
                 var json = Base64Decode(Request.Cookies["consent"]);
@@ -199,8 +199,10 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             {
                 ViewData["Message"] = "La ressource demandée n'a pas été trouvée.";
                 if (consentCookie.Provider=="Custom"){
-                    UriBuilder addDataUri= new UriBuilder(GetResourceUrl(consentCookie.Provider));
-                    addDataUri.Path="/Account/Register";
+                    UriBuilder addDataUri = new UriBuilder(GetResourceUrl(consentCookie.Provider))
+                    {
+                        Path = "/Account/Register"
+                    };
                     ViewData["Register-url"] = addDataUri.Uri;
                 }
                 return View();
@@ -228,15 +230,12 @@ namespace WebApp_Service_Provider_DotNet.Controllers
 
         private BaseResourceViewModel ConvertResource(string json, string scheme)
         {
-            switch (scheme)
+            return scheme switch
             {
-                case "DGFIP":
-                    return JsonSerializer.Deserialize<DgfipResourceViewModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                case "Custom":
-                    return JsonSerializer.Deserialize<CustomResourceViewModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                default:
-                    throw new NotImplementedException();
-            }
+                "DGFIP" => JsonSerializer.Deserialize<DgfipResourceViewModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }),
+                "Custom" => JsonSerializer.Deserialize<CustomResourceViewModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }),
+                _ => throw new NotImplementedException(),
+            };
         }
 
         private string GetResourceUrl(string providerName)

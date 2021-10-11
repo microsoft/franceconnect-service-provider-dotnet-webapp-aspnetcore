@@ -190,8 +190,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.ProviderDisplayName;
 
-                DateTime parsedBirthDate;
-                DateTime.TryParseExact(info.Principal.FindFirstValue("birthdate"), "yyyy-MM-dd", new CultureInfo("fr-FR"), DateTimeStyles.AssumeUniversal, out parsedBirthDate);
+                DateTime.TryParseExact(info.Principal.FindFirstValue("birthdate"), "yyyy-MM-dd", new CultureInfo("fr-FR"), DateTimeStyles.AssumeUniversal, out DateTime parsedBirthDate);
                 ExternalLoginConfirmationViewModel model = new ExternalLoginConfirmationViewModel
                 {
                     Email = info.Principal.FindFirstValue("email"),
