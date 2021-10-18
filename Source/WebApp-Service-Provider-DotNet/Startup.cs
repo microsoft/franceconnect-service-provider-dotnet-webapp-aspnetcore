@@ -71,6 +71,7 @@ namespace WebApp_Service_Provider_DotNet
                         options.UseInMemoryDatabase("InMemory");
                     }
                 });
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -99,7 +100,7 @@ namespace WebApp_Service_Provider_DotNet
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
 
             // Disable HTTPS when using the default FC credentials, as these are only configured for http URLs
