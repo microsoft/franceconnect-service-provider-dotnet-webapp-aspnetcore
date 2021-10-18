@@ -1,0 +1,40 @@
+﻿@using System.Security.Claims
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Data" asp-action="Index">Données</a>
+    </li>
+        @if (User.HasClaim(ClaimTypes.AuthenticationMethod, FranceConnectConfiguration.ProviderScheme))
+        {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Manage" asp-action="Index">Mon compte</a>
+        </li>
+        <li class="nav-item" id="fconnect-profile" data-fc-logout-url="@Url.Action("LogOff", "Account" )">
+            <a class="nav-link text-dark" href="#">@User.FindFirstValue("GivenName") @User.FindFirstValue("PreferredName")</a>
+        </li>
+        }
+        else
+        {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Manage" asp-action="Index" title="Mon compte">Bonjour
+                @User.FindFirstValue("GivenName") @User.FindFirstValue("PreferredName") !</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="LogOff">Se déconnecter</a>
+        </li>
+        }
+    }
+    else
+    {
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Créer un compte</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Se connecter</a>
+    </li>
+    }
+</ul>

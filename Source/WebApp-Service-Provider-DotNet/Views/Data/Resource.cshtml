@@ -1,0 +1,22 @@
+﻿@model BaseResourceViewModel
+@{
+    ViewData["Title"] = "Données externes";
+}
+
+<h2>@ViewData["Title"].</h2>
+<p class="text-warning">@ViewData["Message"]</p>
+
+@if (@ViewData["Register-url"] != null)
+{
+<p class="text-warning">Vérifiez que vous avez bien enregistré des données associées à votre compte actuel chez le fournisseur de données 
+    <a href='@ViewData["Register-url"]'>ici</a>
+</p>
+}
+@if (Model is DgfipResourceViewModel)
+{    
+    <partial name="_DgfipResourcePartial" model="Model"/>
+}
+else if (Model is CustomResourceViewModel)
+{
+    <partial name="_CustomResourcePartial" model="Model"/>
+}

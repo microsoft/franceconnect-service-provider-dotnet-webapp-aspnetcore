@@ -1,0 +1,32 @@
+﻿@model DgfipResourceViewModel
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Scopes</th>
+            <th>Valeurs</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Revenu fiscal de référence</td>
+            <td>@Model.Rfr</td>
+        </tr>
+        <tr>
+            <td>Situation familiale</td>
+            <td>@Model.SitFam</td>
+        </tr>
+        <tr>
+            <td>Nombre de parts</td>
+            <td>@Model.NbPart</td>
+        </tr>
+        <tr>
+            <td>Nombre de personnes à charge</td>
+            <td>@(Model.Pac != null ? Model.Pac.NbPac : "0")</td>
+        </tr>
+        <tr>
+            <td>Adresse fiscale de taxation</td>
+            <td>@Model.aft</td>
+        </tr>
+    </tbody>
+</table>

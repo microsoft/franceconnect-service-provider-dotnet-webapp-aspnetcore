@@ -1,0 +1,50 @@
+﻿@model PivotIdentity
+@{
+    ViewData["Title"] = "Identité pivot";
+}
+
+<h2>@ViewData["Title"].</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Scopes</th>
+                <th>Valeurs</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>gender</td>
+                <td>@Model.Gender</td>
+            </tr>
+            <tr>
+                <td>birthdate</td>
+                <td>@Model.Birthdate.ToString("D")</td>
+            </tr>
+            <tr>
+                <td>birthcountry</td>
+                <td>@Model.Birthcountry</td>
+            </tr>
+            <tr>
+                <td>birthplace</td>
+                <td>@Model.Birthplace</td>
+            </tr>
+            <tr>
+                <td>given_name</td>
+                <td>@Model.GivenName</td>
+            </tr>
+            <tr>
+                <td>family_name</td>
+                <td>@Model.FamilyName</td>
+            </tr>
+            <tr>
+                <td>preferred_username</td>
+                <td>@Model.PreferredName</td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>@Model.Email</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

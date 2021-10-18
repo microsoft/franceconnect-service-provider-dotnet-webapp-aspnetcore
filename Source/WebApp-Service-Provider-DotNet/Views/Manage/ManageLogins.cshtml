@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@model ManageLoginsViewModel
+@{
+    ViewData["Title"] = "Gérez vos authentifications externes";
+}
+
+<h2>@ViewData["Title"].</h2>
+
+<p class="text-success">@ViewData["StatusMessage"]</p>
+@if (Model.IsLinkedToFranceConnect)
+{
+    <h4>Vous êtes lié avec votre compte FranceConnect</h4>
+    if (Model.CanRemoveExternalLogin)
+    {
+        RemoveLoginViewModel account = new RemoveLoginViewModel
+        {
+            LoginProvider = Model.FranceConnectUserAccount.LoginProvider,
+            ProviderKey = Model.FranceConnectUserAccount.ProviderKey
+        };
+        <hr />
+        <form asp-controller="Manage" asp-action="RemoveLogin" method="post" class="form-horizontal" role="form">
+            <div>
+                <input asp-for="@account.LoginProvider" type="hidden" />
+                <input asp-for="@account.ProviderKey" type="hidden" />
+                <input type="submit" class="btn btn-primary" value="Dissocier" title="Supprimer l'authentification par @account.LoginProvider pour votre compte" />
+            </div>
+        </form>
+    }
+}
+else
+{
+    <h4>Liez votre compte local avec votre compte FranceConnect.</h4>
+    <hr />
+    <form asp-controller="Manage" asp-action="LinkLogin" method="post" class="form-horizontal" role="form">
+        <div>
+            <button type="submit" class="btn-fc" name="provider" value="@Model.FranceConnectProvider.Name" title="Connectez vous avec votre compte @Model.FranceConnectProvider.DisplayName"></button>
+        </div>
+    </form>
+}

@@ -1,0 +1,71 @@
+﻿@model ExternalLoginConfirmationViewModel
+@{
+    ViewData["Title"] = "Créer un compte";
+}
+
+<h2>@ViewData["Title"].</h2>
+<h3>Associez votre compte @ViewData["LoginProvider"].</h3>
+<hr />
+
+<p class="text-info">
+    Vous vous êtes correctement authentifié avec <strong>@ViewData["LoginProvider"]</strong>.
+    Veuillez entrer les informations suivantes pour ce site et cliquer sur le bouton Créer un compte pour finir la connexion.
+</p>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Account" asp-action="ExternalLoginConfirmation" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
+            <h4>Formulaire d'association</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" readonly="@(Model.Email!=null)"/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Birthdate"></label>
+                <input asp-for="Birthdate" class="form-control" readonly="@(Model.Birthdate!=null)"/>
+                <span asp-validation-for="Birthdate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender"></label>
+                <div class="form-check">
+                    <input type="radio" asp-for="Gender" class="form-check-input" value="male" disabled="@(Model.Gender!=null && Model.Gender!="male")">
+                    <label for="male" class="form-check-label">Homme</label><br>
+                </div>
+                <div class="form-check">
+                    <input type="radio" asp-for="Gender" class="form-check-input" value="female" disabled="@(Model.Gender!=null && Model.Gender!="female")">
+                    <label for="female" class="form-check-label">Femme</label><br>
+                </div>
+                <div class="form-check">
+                    <input type="radio" asp-for="Gender" class="form-check-input" value="other" disabled="@(Model.Gender!=null && Model.Gender!="other")">
+                    <label for="other" class="form-check-label">Autre</label>
+                </div>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GivenName"></label>
+                <input asp-for="GivenName" class="form-control" readonly="@(Model.GivenName!=null)"/>
+                <span asp-validation-for="GivenName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FamilyName"></label>
+                <input asp-for="FamilyName" class="form-control" readonly="@(Model.FamilyName!=null)"/>
+                <span asp-validation-for="FamilyName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PreferredName"></label>
+                <input asp-for="PreferredName" class="form-control" readonly="@(Model.PreferredName!=null)"/>
+                <span asp-validation-for="PreferredName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Créer un compte</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,10 @@
+﻿@model IEnumerable<DataProvider>
+@{
+    ViewData["Title"] = "Obtenir des données externes";
+}
+
+<h2>@ViewData["Title"].</h2>
+@foreach (DataProvider provider in Model)
+{
+    <a asp-controller="Data" asp-action="GetResource" asp-route-provider="@provider.Name" class="btn btn-outline-secondary">@provider.Name</a>
+}
