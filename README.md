@@ -2,7 +2,7 @@
 
 Ce projet exemple propose un canevas de site web en [ASP.NET Core](https://dotnet.microsoft.com/learn/aspnet/what-is-aspnet-core) qui s’appuie sur FranceConnect pour identifier les internautes qui le souhaitent.
 
-La version utilisée est .NET Core 5
+La version utilisée est .NET 6
 
 Vous pouvez trouver sur ce répertoire **[la documentation associée](/Documentation)**, ainsi que le **[le guide de démarrage rapide](/Source/README.md)** afin d'executer le canevas localement.
 
