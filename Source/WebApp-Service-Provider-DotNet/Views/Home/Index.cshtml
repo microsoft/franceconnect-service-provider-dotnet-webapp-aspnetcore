@@ -2,37 +2,71 @@
     ViewData["Title"] = "Accueil";
 }
 
-<div class="jumbotron jumbotron-fc">
-    <img src="~/images/fc_logo_alt1_v2.png" alt="Logo FranceConnect" />
-</div>
 
-<div class="row">
-    <div class="col-md-3">
-        <h2>Fournisseur de service</h2>
-        <ul>
-            <li><a href="https://partenaires.franceconnect.gouv.fr/fcp/fournisseur-service" target="_blank">Voir la documentation FranceConnect</a></li>
-        </ul>
+<div id="hero-display" class="bg-white text-secondary align-items-center rounded-3 border shadow-lg text-center">
+    <div class="py-5">
+        <h1 class="display-5 fw-bold text-black">
+            Fournisseur de service supportant FranceConnect
+        </h1>
+        <a class="fs-3 px-md-3" asp-controller="Home" asp-action="About">
+            Instructions d'utilisation
+        </a>
+        <br>
+        <br>
+        <h4 class="text-primary mb-4">Obtenez plus d'informations concernant : </h4>
+
+        <div class="container-md px-lg-5">
+            <div class="btn-group-lg d-grid col mx-auto gap-4 d-md-flex justify-items-evenly py-md-5">
+
+                <div class="btn-group btn-group-lg ">
+                    <a class="btn btn-dark" type="button" href="https://aka.ms/FranceConnect">
+                        Les trois composants du kit de démarrage FranceConnect
+                    </a>
+                    <button type="button" class="btn btn-dark dropdown-toggle dropdown-toggle-split" id="fcDropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden"> Activer le menu déroulant </span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="fcDropdownMenuLink">
+                        <li>
+                            <a class="dropdown-item" href="https://github.com/microsoft/franceconnect-service-provider-dotnet-webapp-aspnetcore">Fournisseur de service</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="https://github.com/microsoft/franceconnect-data-provider-dotnet-webapi-aspnetcore">Fournisseur de données</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="https://github.com/microsoft/franceconnect-identity-provider-dotnet-webapi-aspnetcore">Fournisseur d'identité</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <a type="button" class="btn btn-dark" href="https://docs.microsoft.com/aspnet/core">
+                    L'environnement Web multi-plateforme ASP.NET Core et sa prise en main
+                </a>
+
+                <a type="button" class="btn btn-dark" href="https://partenaires.franceconnect.gouv.fr/fcp/fournisseur-service">
+                    La documentation d'implémentation FranceConnect
+                </a>
+
+            </div>
+        </div>
     </div>
-    <div class="col-md-3">
-        <h2>ASP.NET Core</h2>
-        <ul>
-            <li>ASP.NET Core est disponible pour Windows, Linux et Mac OS X</li>
-            <li><a href="https://docs.asp.net/en/latest/" target="_blank">Voir la documentation ASP.NET Core</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Kit de démarrage</h2>
-        <ul>
-            <li><a href="https://github.com/FranceConnectSamples/franceconnect-service-provider-dotnet-webapp-aspnetcore" target="_blank">Fournisseur de service</a></li>
-            <li><a href="https://github.com/FranceConnectSamples/franceconnect-data-provider-dotnet-webapi-aspnetcore" target="_blank">Fournisseur de données</a></li>
-            <li><a href="https://github.com/FranceConnectSamples/franceconnect-identity-provider-dotnet-webapi-aspnetcore" target="_blank">Fournisseur d'identité</a></li>
-        </ul>
-    </div>
-    <div class="col-md-3">
-        <h2>Démo</h2>
-        <ul>
-            <li><a asp-controller="Home" asp-action="About">Instructions de fonctionnement de ce fournisseur de service de démonstration</a></li>
-            <li><a href="http://franceconnect-service-provider-dotnet-webapp-aspnetcore.azurewebsites.net/" target="_blank">Version déployée dans le cloud de ce fournisseur de service.</a></li>
-        </ul>
-    </div>
+</div>
+<br />
+<div class="d-flex justify-content-between">
+    <p class="fs-6">
+        Suivez les <a href="https://opensource.microsoft.com">initiatives Open Source de Microsoft</a>
+        <br />
+        <span class="social">
+            <a itemprop="sameAs" target="_blank" href="https://twitter.com/OpenAtMicrosoft" aria-label="Accédez au compte Twitter de Microsoft Security">
+                <img src="~/images/Twitter.png" alt="Logo Twitter">
+            </a>
+            <a itemprop="sameAs" target="_blank" href="https://cloudblogs.microsoft.com/opensource/" aria-label="Accédez aux blogs de Microsoft Open Source">
+                <img src="~/images/Blog.png" alt="Logo Blog">
+            </a>
+        </span>
+    </p>
+    <p class="fs-6 text-end">
+        Les projets Microsoft adoptent le <a href="https://opensource.microsoft.com/codeofconduct/">Code de Conduite Open Source Microsoft.</a>
+        <br />
+        Pour en savoir plus, consultez la <a href="https://opensource.microsoft.com/codeofconduct/faq/">FAQ</a>.
+    </p>
 </div>
