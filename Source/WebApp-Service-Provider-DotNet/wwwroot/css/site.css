@@ -7,9 +7,8 @@ a.navbar-brand {
     word-break: break-all;
 }
 
-/* Provide sufficient contrast against white background */
 a {
-    color: #0366d6;
+    color: #0077cc;
 }
 
 .btn-primary {
@@ -28,6 +27,12 @@ html {
     html {
         font-size: 16px;
     }
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 .border-top {
@@ -67,11 +72,6 @@ body {
     line-height: 60px; /* Vertically center the text there */
 }
 
-/* jumbotron FranceConnect */
-.jumbotron-fc {
-    margin-top: 15px;
-    text-align: center;
-}
 
 /* FranceConnect button */
 .btn-fc {
@@ -83,15 +83,26 @@ body {
     border: none;
 }
 
-.btn-fc:hover {
-    background: url(/images/franceconnect-bouton-hover.png) no-repeat center;
-    background-image: url(/images/franceconnect-bouton-hover.svg);
-    background-size: contain;
-}
+    .btn-fc:hover {
+        background: url(/images/franceconnect-bouton-hover.png) no-repeat center;
+        background-image: url(/images/franceconnect-bouton-hover.svg);
+        background-size: contain;
+    }
 
 /* Kit FranceConnect */
 #fconnect-profile > a {
     padding: 0.5rem 0.5rem 0.5rem 2.5rem !important;
     font-size: inherit !important;
     background-size: 32px !important;
+}
+/* Homepage Background */
+#hero-display {
+    background-image: url("/images/MSSecurityBackground.gif");
+    background-position: center;
+    background-size: cover;
+}
+/* Homepage social links */
+.social > a {
+    text-decoration: none;
+    border: none;
 }

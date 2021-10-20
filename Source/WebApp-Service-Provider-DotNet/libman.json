@@ -4,7 +4,7 @@
   "libraries": [
     {
       "provider": "jsdelivr",
-      "library": "bootstrap@4.3.1",
+      "library": "bootstrap@5.1.3",
       "destination": "wwwroot/lib/bootstrap/",
       "files": [
         "dist/css/bootstrap-grid.css",
@@ -31,11 +31,11 @@
       ]
     },
     {
-      "library": "jquery@3.3.1",
+      "library": "jquery@3.6.0",
       "destination": "wwwroot/lib/jquery/dist"
     },
     {
-      "library": "jquery-validate@1.19.2",
+      "library": "jquery-validate@1.19.3",
       "destination": "wwwroot/lib/jquery-validation/dist/"
     },
     {

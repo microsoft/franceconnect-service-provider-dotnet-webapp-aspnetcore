@@ -24,17 +24,17 @@
                 @User.FindFirstValue("GivenName") @User.FindFirstValue("PreferredName") !</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Account" asp-action="LogOff">Se déconnecter</a>
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="LogOff">Déconnexion</a>
         </li>
         }
     }
     else
     {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Créer un compte</a>
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Inscription</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Se connecter</a>
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Connexion</a>
     </li>
     }
 </ul>
