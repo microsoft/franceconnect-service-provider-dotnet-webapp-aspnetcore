@@ -17,7 +17,7 @@ namespace WebApp_Service_Provider_DotNet.Helpers
         {
             if (acrValues != null)
             {
-                Regex myRegex = new Regex(@"eidas(\d)");
+                Regex myRegex = new(@"eidas(\d)");
                 Match match = myRegex.Match(acrValues);
                 if (match.Success)
                 {

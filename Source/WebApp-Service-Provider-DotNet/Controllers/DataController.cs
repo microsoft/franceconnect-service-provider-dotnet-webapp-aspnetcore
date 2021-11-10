@@ -101,15 +101,15 @@ namespace WebApp_Service_Provider_DotNet.Controllers
 
             if (string.IsNullOrEmpty(code))
             {
-                throw new ArgumentNullException("Authorization code cannot be null");
+                throw new ArgumentNullException(code,"Authorization code cannot be null");
             }
             if (string.IsNullOrEmpty(state))
             {
-                throw new ArgumentNullException("State cannot be null");
+                throw new ArgumentNullException(state,"State cannot be null");
             }
             if (state != consentCookie.State)
             {
-                throw new ArgumentException("Invalid state");
+                throw new ArgumentException("Invalid state", state);
             }
 
             var tokenClient = new HttpClient();
@@ -199,7 +199,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
             {
                 ViewData["Message"] = "La ressource demandée n'a pas été trouvée.";
                 if (consentCookie.Provider=="Custom"){
-                    UriBuilder addDataUri = new UriBuilder(GetResourceUrl(consentCookie.Provider))
+                    UriBuilder addDataUri = new(GetResourceUrl(consentCookie.Provider))
                     {
                         Path = "/Account/Register"
                     };
@@ -228,7 +228,7 @@ namespace WebApp_Service_Provider_DotNet.Controllers
 
         #region Helpers
 
-        private BaseResourceViewModel ConvertResource(string json, string scheme)
+        private static BaseResourceViewModel ConvertResource(string json, string scheme)
         {
             return scheme switch
             {
@@ -258,13 +258,13 @@ namespace WebApp_Service_Provider_DotNet.Controllers
                 : Request.Scheme + "://" + Request.Host + Url.Action(nameof(GetResourceCallback));
         }
 
-        private string Base64Encode(string text)
+        private static string Base64Encode(string text)
         {
             var bytes = Encoding.UTF8.GetBytes(text);
             return Convert.ToBase64String(bytes);
         }
 
-        private string Base64Decode(string base64EncodedText)
+        private static string Base64Decode(string base64EncodedText)
         {
             var bytes = Convert.FromBase64String(base64EncodedText);
             return Encoding.UTF8.GetString(bytes);
