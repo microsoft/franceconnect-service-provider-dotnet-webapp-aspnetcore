@@ -26,7 +26,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-        include-prerelease: true # TODO : Remove this line after .NET 6.0 official release.
     - name: Restore dotnet tools
       run: dotnet tool restore
       working-directory: ${{ env.WORKING_DIRECTORY }}
