@@ -1,3 +1,9 @@
+# **AVERTISSEMMENT : CE PROJET EST DEPRECIE ET N'EST PLUS MAINTENU EN L'ETAT.** 
+
+**Au-delà d'une certaine dette technique, il cible en effet la version de FranceConnect en service depuis 2016, appelée FranceConnect version 1, et actuellement en cours de retrait. La version 1 de FranceConnect sera définitivement arrêtée en septembre 2025.**
+
+**Une nouvelle version de FranceConnect, appelée [FranceConnect version 2](https://docs.partenaires.franceconnect.gouv.fr/fs/migration/fs-migration-presentation/), est en effet en service depuis mai 2024. Compte tenu des évolutions introduites par cette version 2, en particulier pour (mieux) se conformer au standard de l'industrie [OpenID Connect (OIDC)](https://openid.net/specs/openid-connect-core-1_0.html), ce projet n'a plus lieu d'être.** 
+
 # Kit de démarrage FranceConnect - Fournisseur de service (FS)
 
 Ce projet exemple propose un canevas de site web en [ASP.NET Core](https://dotnet.microsoft.com/learn/aspnet/what-is-aspnet-core) qui s’appuie sur FranceConnect pour identifier les internautes qui le souhaitent.
